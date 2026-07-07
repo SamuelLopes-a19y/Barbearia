@@ -1,20 +1,24 @@
 require('dotenv').config();
-
 const app = require('./app');
 const { connect } = require('./database'); 
-const PORT = 3001;
+
+const PORT = process.env.PORT || 3001;
 
 async function start() {
   try {
+    // Garante a ligação à base de dados antes de abrir a API para requisições
     await connect(); 
     
+    
     app.listen(PORT, () => {
-      console.log(`\nFuncionando!`);
-      console.log(`Acesse: http://localhost:${PORT}`);
+      console.log(`\n=========================================`);
+      console.log(`  Servidor da Barbearia Online e Ativo!  `);
+      console.log(`  Aceda em: http://localhost:${PORT}     `);
+      console.log(`=========================================\n`);
     });
 
   } catch (error) {
-    console.error("Falha ao iniciar:", error);
+    console.error("Falha crítica ao iniciar o servidor da Barbearia:", error);
   }
 }
 

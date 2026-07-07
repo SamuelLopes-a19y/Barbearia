@@ -1,19 +1,13 @@
 const express = require('express');
+const cors = require('cors');
 
-const clienteRoutes = require('./routes/clienteRoutes');
-const barbeiroRoutes = require('./routes/barbeiroRoutes');
-const atendenteRoutes = require('./routes/atendenteRoutes');
-const gerenteRoutes = require('./routes/gerenteRoutes');
-// const agendamentoRoutes =  require('./routes/agendamentoRoutes');
-// const authRoutes = require('./routes/authRoutes');
-// const avaliacaoRoutes =  require('./routes/avaliacaoRoutes');
-// const historicoCorteRoutes = require('./routes/historicoCorteRoutes');
-// const recomendacaoRoutes = require('./routes/recomendacaoRoutes');
-// const pedidoEspecialRoutes = require('./routes/pedidoEspecialRoutes');
-// const produtoRoutes = require('./routes/produtoRoutes');
-// const vendaRoutes = require('./routes/vendaRoutes');
-// const cors = require('cors');
-
+// Importação das rotas da Barbearia
+const authRoutes = require('./routes/authRoutes');
+const clienteRoutes = require('./routes/clienteRoutes'); // Antigo pacienteRoutes
+const barbeiroRoutes = require('./routes/barbeiroRoutes'); // Antigo medicoRoutes
+// const atendenteRoutes = require('./routes/atendenteRoutes'); // Arquivo não existe, unificado em auth ou outros? Não, precisa existir para CRUD de atendentes.
+const agendamentoRoutes = require('./routes/agendamentoRoutes');
+const vendaProdutoRoutes = require('./routes/vendaProdutoRoutes'); // Antigo dispensaRoutes
 
 class App {
   constructor() {
@@ -25,27 +19,22 @@ class App {
   middlewares() {
     this.server.use(express.json());
     this.server.use(cors({
-      origin: 'http://localhost:5173',
+      origin: 'http://localhost:5173', // URL padrão do Vite/React
       methods: ['GET', 'POST', 'PUT', 'DELETE'],
       allowedHeaders: ['Content-Type', 'Authorization']
     }));
   }
-  
 
   routes() {
+    // Endpoints disponíveis na API
+    this.server.use(authRoutes);
     this.server.use(clienteRoutes);
     this.server.use(barbeiroRoutes);
-    this.server.use(atendenteRoutes);
-    this.server.use(gerenteRoutes);
+    // this.server.use(atendenteRoutes);
     this.server.use(agendamentoRoutes);
-    this.server.use(authRoutes);
-    this.server.use(avaliacaoRoutes);
-    this.server.use(historicoCorteRoutes);
-    this.server.use(recomendacaoRoutes);
-    this.server.use(pedidoEspecialRoutes);
-    this.server.use(produtoRoutes);
-    this.server.use(vendaRoutes);
+    this.server.use(vendaProdutoRoutes);
   }
 }
 
+// Exporta o servidor express pronto
 module.exports = new App().server;
