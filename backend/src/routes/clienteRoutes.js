@@ -1,14 +1,18 @@
 const { Router } = require('express');
-const ClienteController = require('../controllers/ClienteController/ClienteController');
+
+const clienteController = require('../controllers/clienteController');
+
 const auth = require('../middlewares/auth');
-const authRecep = require('../middlewares/authGerente');
+const authAtendente = require('../middlewares/authAtendente'); // Antigo authRecepcionista
 
 const routes = new Router();
 
-routes.post('/clientes', auth, authRecep, ClienteController.create);
-routes.get('/clientes', auth, ClienteController.list);
-routes.get('/clientes/buscar', auth, ClienteController.select);
-routes.put('/clientes', auth, authRecep, ClienteController.update);
-routes.delete('/clientes', auth, authRecep, ClienteController.delete);
+// Apenas atendentes/admin criam, atualizam ou deletam clientes manualmente, 
+// mas todos os autenticados podem listar ou buscar.
+routes.post('/clientes', auth, authAtendente, clienteController.create);
+routes.get('/clientes', auth, clienteController.list);
+routes.get('/clientes/buscar', auth, clienteController.select);
+routes.put('/clientes', auth, authAtendente, clienteController.update);
+routes.delete('/clientes', auth, authAtendente, clienteController.delete);
 
 module.exports = routes;
