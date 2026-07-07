@@ -1,4 +1,4 @@
-const Usuario = require("./UsuarioModel");
+const Usuario = require("./usuario");
 
 class Admin extends Usuario {
     constructor(nome, cpf, email, senha) {
