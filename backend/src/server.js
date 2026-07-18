@@ -9,6 +9,7 @@ async function start() {
     // Garante a ligação à base de dados antes de abrir a API para requisições
     await connect(); 
     
+    
     app.listen(PORT, () => {
       console.log(`\n=========================================`);
       console.log(`  Servidor da Barbearia Online e Ativo!  `);

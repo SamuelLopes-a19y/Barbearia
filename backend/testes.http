@@ -1,0 +1,82 @@
+### Variáveis Globais
+@baseUrl = http://localhost:3001
+
+### 0. Realizar Login (Guarda o token automaticamente)
+# @name fazerLogin
+POST {{baseUrl}}/login
+Content-Type: application/json
+
+{
+  "email": "admin@barbearia.com",
+  "senha": "12345678",
+  "tipo": "ADMIN"
+}
+
+### O REST Client vai pegar o token que veio na resposta acima 
+@token = {{fazerLogin.response.body.token}}
+
+
+### =================================================================
+
+### 1. Criar um Novo Cliente (POST)  - Requisição OK!
+POST {{baseUrl}}/clientes
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "nome": "Patrik Silva",
+  "cpf": "12345678901",
+  "email": "patrik@email.com",
+  "senha": "senhaSegura123",
+  "dataNasc": "1995-05-15",
+  "telefone": "11999999999",
+  "tipoCabelo": "Crespo",
+  "preferencias": "Gosta de café, não usa navalha",
+  "endereco": {
+    "rua": "Rua das Flores",
+    "numero": 123,
+    "bairro": "Centro",
+    "cidade": "São Paulo",
+    "estado": "SP",
+    "cep": "01001-000"
+  }
+}
+
+### 2. Listar Todos os Clientes (GET)  - Requisição OK!
+GET {{baseUrl}}/clientes
+Authorization: Bearer {{token}}
+
+### 3. Selecionar um Cliente Específico por ID (POST) - A testar
+POST {{baseUrl}}/clientes/detalhes
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "id": "6a4c6f6b078be4bf93ccae06"
+}
+
+### 4. Atualizar um Cliente (PUT)  - Requisição OK!
+PUT {{baseUrl}}/clientes
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "id_cliente": "6a4c6f6b078be4bf93ccae06",
+  "id_admin": "6a4c6f6b078be4bf93ccae00",
+  "nome": "Patrik Silva Atualizado",
+  "cpf": "12345999901",
+  "email": "patrik.atualizado@email.com",
+  "dataNasc": "1995-05-15",
+  "telefone": "11999999999",
+  "tipoCabelo": "Crespo",
+  "preferencias": "Mudou de ideia: agora prefere chá"
+}
+
+### 5. Deletar um Cliente (DELETE) - Requisição OK!
+DELETE {{baseUrl}}/clientes
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "id": "6a4c6f6b078be4bf93ccae07"
+}
