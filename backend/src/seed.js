@@ -38,7 +38,7 @@ async function povoarBanco() {
             tipoPerfil: "ADMIN"
         });
 
-        // 2. Criar Atendentes (Antigos Recepcionistas)
+        // 2. Criar Atendentes
         const idAtendente1 = new ObjectId(); //
         const idAtendente2 = new ObjectId();
         await db.collection('atendentes').insertMany([
@@ -68,7 +68,7 @@ async function povoarBanco() {
             }
         ]);
 
-        // 3. Criar Barbeiros (Antigos Médicos)
+        // 3. Criar Barbeiros
         const idBarbeiro1 = new ObjectId();
         const idBarbeiro2 = new ObjectId();
         const idBarbeiro3 = new ObjectId();
@@ -114,7 +114,7 @@ async function povoarBanco() {
             }
         ]);
 
-        // 4. Criar Clientes (Antigos Pacientes)
+        // 4. Criar Clientes
         const idCliente1 = new ObjectId();
         const idCliente2 = new ObjectId();
         const idCliente3 = new ObjectId();
@@ -157,7 +157,7 @@ async function povoarBanco() {
             }
         ]);
 
-        // 5. Criar Produtos (Antigos Medicamentos)
+        // 5. Criar Produtos 
         const idProduto1 = new ObjectId();
         const idProduto2 = new ObjectId();
         const idProduto3 = new ObjectId();
@@ -228,7 +228,7 @@ async function povoarBanco() {
             }
         ]);
 
-        // 7. Criar Histórico de Serviços (Antigas Evoluções)
+        // 7. Criar Histórico de Serviços
         await db.collection('historico_servicos').insertMany([
             {
                 servico_realizado: "Corte Degradê + Sobrancelha na navalha",
@@ -246,7 +246,7 @@ async function povoarBanco() {
             }
         ]);
 
-        // 8. Criar Vendas de Produtos (Antigas Dispensas)
+        // 8. Criar Vendas de Produtos
         await db.collection('vendas_produtos').insertMany([
             {
                 id_produto: idProduto1,
@@ -267,12 +267,12 @@ async function povoarBanco() {
         ]); //
 
         console.log("\n=========================================");
-        console.log(" 🎉 Base de dados Povoada com Sucesso!   ");
+        console.log(" Base de dados Povoada com Sucesso!   ");
         console.log(" Todos os dados fictícios foram criados. ");
         console.log("=========================================\n");
 
     } catch (error) {
-        console.error("❌ Erro crítico ao povoar a base de dados:", error);
+        console.error("Erro crítico ao povoar a base de dados:", error);
     } finally {
         process.exit(0);
     }

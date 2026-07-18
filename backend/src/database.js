@@ -18,8 +18,6 @@ async function connect() {
         await client.connect();
         console.log("Conectado ao MongoDB com sucesso!");
         
-        // Altera o nome do banco de dados para o contexto da Barbearia
-        // Se houver DB_NAME no .env ele usa, senão padroniza para "Barbearia"
         const dbName = process.env.DB_NAME || "Barbearia";
         dbInstance = client.db(dbName);
         console.log(`Banco de dados ativo: [${dbName}]`);

@@ -1,6 +1,5 @@
 const bcryptjs = require('bcryptjs');
 const Barbeiro = require('../../models/barbeiro');
-//const Endereco = require('../../models/EnderecoModel');
 const BarbeiroRepo = require('../../repositories/barbeiroRepository');
 
 module.exports = {
@@ -11,11 +10,6 @@ module.exports = {
 
             const errosBarbeiro = Barbeiro.validarBarbeiro(dados);
             if (errosBarbeiro.length > 0) erros.push(...errosBarbeiro);
-
-            if (dados.endereco) {
-                //const errosEnd = Endereco.validarEndereco(dados.endereco);
-                //if (errosEnd.length > 0) erros.push(...errosEnd);
-            }
 
             if (erros.length === 0) {
                 const usuarioExistente = await BarbeiroRepo.findByCpfOrEmail(dados.cpf, dados.email);
@@ -58,6 +52,4 @@ module.exports = {
         }
     },
 
-    // Ocultados select, update e delete por brevidade, mas eles 
-    // seguem exatamente a mesma lógica, substituindo "medico" por "barbeiro".
 };

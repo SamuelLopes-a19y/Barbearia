@@ -3,8 +3,8 @@ const Usuario = require("./usuario");
 class Barbeiro extends Usuario {
     constructor(nome, cpf, email, senha, dataNasc, endereco, telefone, especialidades, descricao) {
         super(nome, cpf, 'BARBEIRO', email, senha, dataNasc, endereco, telefone);
-        this.especialidades = especialidades; // Array de strings ou string longa
-        this.descricao = descricao; // Frase de perfil: "Especialista em degradê navalhado"
+        this.especialidades = especialidades; 
+        this.descricao = descricao; 
     }
 
     static validarBarbeiro(dados) {

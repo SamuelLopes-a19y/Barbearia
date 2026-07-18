@@ -1,7 +1,6 @@
 const bcryptjs = require('bcryptjs');
 
 const Atendente = require('../../models/atendente');
-//const Endereco = require('../../models/EnderecoModel');
 const AtendenteRepo = require('../../repositories/atendenteRepository');
 
 module.exports = {
@@ -12,13 +11,6 @@ module.exports = {
 
             const errosAtendente = Atendente.validarAtendente(dados);
             if (errosAtendente.length > 0) erros.push(...errosAtendente);
-
-            if (dados.endereco) {
-                //const errosEnd = Endereco.validarEndereco(dados.endereco);
-                //if (errosEnd.length > 0) erros.push(...errosEnd);
-            }
-
-            // Validação de e-mail/cpf existente removida para brevidade, mas é igual à de cima.
             
             if (erros.length > 0) {
                 return res.status(400).json({ erros });

@@ -1,7 +1,7 @@
 const VendaProduto = require('../../models/vendaProduto');
 
 const VendaProdutoRepo = require('../../repositories/VendaProdutoRepository');
-const ProdutoRepo = require('../../repositories/ProdutoRepository'); // Antigo Medicamento
+const ProdutoRepo = require('../../repositories/ProdutoRepository');
 const ClienteRepo = require('../../repositories/ClienteRepository');
 const AtendenteRepo = require('../../repositories/AtendenteRepository');
 

@@ -1,9 +1,9 @@
 const bcryptjs = require('bcryptjs');
-const Cliente = require('../models/cliente'); // Ajustado caminho relativo conforme contexto anterior
+const Cliente = require('../models/cliente'); 
 const ClienteRepo = require('../repositories/clienteRepository');
-const Endereco = require('../models/EnderecoModel'); // Mantenha o caminho correto do seu projeto para o Endereco
-const AtendenteRepo = require('../repositories/atendenteRepository'); // Substituindo Recepcionista por Atendente do seu print
-const AdminRepo = require('../repositories/adminRepository'); // Substituindo Admin pelo seu repositório correspondente
+const Endereco = require('../models/EnderecoModel'); 
+const AtendenteRepo = require('../repositories/atendenteRepository'); 
+const AdminRepo = require('../repositories/adminRepository');
 
 module.exports = {
 
@@ -15,12 +15,6 @@ module.exports = {
             // Validação dos dados do Cliente
             const errosCliente = Cliente.validarCliente(dados);
             if (errosCliente.length > 0) erros.push(...errosCliente);
-
-            // Validação opcional de Endereço
-            if (dados.endereco) {
-                const errosEnd = Endereco.validarEndereco(dados.endereco);
-                if (errosEnd.length > 0) erros.push(...errosEnd);
-            }
 
             // Verifica duplicidade se não houver erros prévios de validação
             if (erros.length === 0) {
@@ -37,7 +31,6 @@ module.exports = {
 
             const { nome, cpf, email, senha, dataNasc, endereco, telefone, tipoCabelo, preferencias } = dados;
 
-            // Instanciando a classe Cliente com a assinatura correta do seu constructor
             const cliente = new Cliente(
                 nome, 
                 cpf, 
@@ -50,7 +43,7 @@ module.exports = {
                 preferencias
             );
 
-            // Criptografa a senha (garanta que o método hashPassword exista na classe herdada Usuario)
+            // Criptografa a senha 
             await cliente.hashPassword();
 
             const resultado = await ClienteRepo.create(cliente);

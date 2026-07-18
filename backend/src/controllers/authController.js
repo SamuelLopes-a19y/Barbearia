@@ -13,7 +13,6 @@ module.exports = {
             const { email, senha, tipo } = req.body;
             let usuario = null;
 
-            // Ajustamos o switch para os novos papéis da Barbearia
             switch(tipo.toLowerCase()) {
                 case 'barbeiro': 
                     usuario = await BarbeiroRepo.findByEmail(email);
@@ -22,7 +21,6 @@ module.exports = {
                     usuario = await ClienteRepo.findByEmail(email);
                     break;
                 case 'atendente': 
-                    // Unifica as antigas funções de enfermeiro e recepcionista
                     usuario = await AtendenteRepo.findByEmail(email);
                     break;
                 case 'admin':
@@ -37,7 +35,6 @@ module.exports = {
             const senhaValida = await bcryptjs.compare(senha, usuario.senha);
             if (!senhaValida) return res.status(401).json({ erro: "Palavra-passe incorreta." });
 
-            // Geração do token mantida, usando os dados atualizados
             const token = jwt.sign({ 
                 id: usuario._id, 
                 tipo: tipo.toLowerCase() 

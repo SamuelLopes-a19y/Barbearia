@@ -1,12 +1,10 @@
 const bcryptjs = require('bcryptjs');
-//const Endereco = require('./EnderecoModel');
 
 class Usuario {
-    // tipoPerfil agora aceita: 'ADMIN', 'BARBEIRO', 'CLIENTE', 'ATENDENTE'
     constructor(nome, cpf, tipoPerfil, email, senha, dataNasc, enderecoData, telefone) {
         this.nome = nome;
         this.cpf = cpf;
-        this.tipoPerfil = tipoPerfil?.toUpperCase(); // Garante o padrão em caixa alta
+        this.tipoPerfil = tipoPerfil?.toUpperCase();
         this.email = email;
         this.senha = senha;
         this.dataNasc = dataNasc;
@@ -37,15 +35,13 @@ class Usuario {
         
         if (!usuario.nome) erros.push("O campo 'nome' é obrigatório.");
         if (!usuario.cpf) erros.push("O campo 'cpf' é obrigatório.");
-        
-        // CORREÇÃO: Validação segura do e-mail para não quebrar o servidor
+
         if (!usuario.email || !usuario.email.includes('@')) {
             erros.push("E-mail inválido ou não informado.");
         }
         
         if (!usuario.senha) erros.push("O campo 'senha' é obrigatório.");
         
-        // CORREÇÃO: Validando o atributo correto do objeto enviado
         if (!usuario.dataNasc) {
             erros.push("O campo 'dataNasc' (Data de nascimento) é obrigatório.");
         }
