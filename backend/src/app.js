@@ -6,6 +6,7 @@ const clienteRoutes = require('./routes/clienteRoutes');
 const barbeiroRoutes = require('./routes/barbeiroRoutes'); 
 const atendenteRoutes = require('./routes/atendenteRoutes'); 
 const agendamentoRoutes = require('./routes/agendamentoRoutes');
+const produtoRoutes = require('./routes/produtoRoutes');
 const vendaProdutoRoutes = require('./routes/vendaProdutoRoutes'); 
 
 class App {
@@ -31,7 +32,9 @@ class App {
     this.server.use(barbeiroRoutes);
     this.server.use(atendenteRoutes);
     this.server.use(agendamentoRoutes);
+    this.server.use(produtoRoutes);
     this.server.use(vendaProdutoRoutes);
+    
   }
 }
 

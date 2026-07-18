@@ -1,9 +1,9 @@
-const Produto = require('../../models/produto');
-const VendaProduto = require('../../models/vendaProduto'); 
-const ProdutoRepo = require('../../repositories/produtoRepository');
-const ClienteRepo = require('../../repositories/clienteRepository');
-const AtendenteRepo = require('../../repositories/atendenteRepository');
-const VendaProdutoRepo = require('../../repositories/vendaProdutoRepository'); 
+const Produto = require('../models/produto');
+const VendaProduto = require('../models/vendaProduto'); 
+const ProdutoRepo = require('../repositories/produtoRepository');
+const ClienteRepo = require('../repositories/clienteRepository');
+const AtendenteRepo = require('../repositories/atendenteRepository');
+const VendaProdutoRepo = require('../repositories/vendaProdutoRepository'); 
 const { ObjectId } = require('mongodb'); 
 
 module.exports = {
@@ -114,10 +114,6 @@ module.exports = {
             res.status(500).json({ erro: error.message });
         }
     },
-
-    // ==========================================
-    // Vendas de Produtos (Antiga Dispensa)
-    // ==========================================
 
     async realizarVenda(req, res) {
         try {

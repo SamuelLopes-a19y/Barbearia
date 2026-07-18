@@ -1,11 +1,11 @@
 class Endereco {
     constructor(estado, cidade, bairro, rua, cep, numero) {
         this.estado = estado;
-        this.cidade = cidade;
-        this.bairro = bairro;
-        this.rua = rua;
-        this.cep = cep;
-        this.numero = numero;
+        this.cidade = cidade; 
+        this.bairro = bairro; 
+        this.rua = rua; 
+        this.cep = cep; 
+        this.numero = numero; 
     }
 
     static validarEndereco(endereco) {

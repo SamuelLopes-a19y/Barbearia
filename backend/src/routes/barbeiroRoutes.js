@@ -1,5 +1,5 @@
 const { Router } = require('express');
-const BarbeiroController = require('../controllers/BarbeiroController');
+const BarbeiroController = require('../controllers/barbeiroController');
 const auth = require('../middlewares/auth');
 const authAtendente = require('../middlewares/authAtendente');
 

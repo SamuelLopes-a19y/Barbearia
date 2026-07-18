@@ -1,9 +1,9 @@
 const { Router } = require('express');
 
 const clienteController = require('../controllers/clienteController');
-
+const Endereco = require('../models/EnderecoModel');
 const auth = require('../middlewares/auth');
-const authAtendente = require('../middlewares/authAtendente'); // Antigo authRecepcionista
+const authAtendente = require('../middlewares/authAtendente');
 
 const routes = new Router();
 

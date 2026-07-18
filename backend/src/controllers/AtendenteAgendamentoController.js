@@ -1,5 +1,5 @@
-const AgendamentoRepo = require('../repositories/baseRepository'); // Usando base para exemplo ou criar um específico
-// Nota: O ideal seria um agendamentoRepository, mas vamos usar o base para a coleção agendamentos
+const AgendamentoRepo = require('../repositories/baseRepository'); 
+
 const { ObjectId } = require('mongodb');
 
 module.exports = {

@@ -1,4 +1,5 @@
 const Usuario = require("./usuario");
+const Endereco = require('../models/EnderecoModel');
 
 class Atendente extends Usuario {
     constructor(nome, cpf, email, senha, dataNasc, endereco, telefone) {

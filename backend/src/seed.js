@@ -3,7 +3,7 @@ const { connect, getDb } = require('./database');
 const { ObjectId } = require('mongodb');
 
 // Senha padrão encriptada: "12345678"
-const hashSenha = "$2b$08$wPE5xLM8chqL815ukf96s.KTwc2PF7qxl1.GhqiI8XbSCYgERJGIW"; //
+const hashSenha = "$2b$08$wPE5xLM8chqL815ukf96s.KTwc2PF7qxl1.GhqiI8XbSCYgERJGIW"; 
 
 async function povoarBanco() {
     try {
@@ -15,20 +15,20 @@ async function povoarBanco() {
         await db.dropDatabase(); 
         console.log("Banco limpo com sucesso! Criando novas estruturas...");
 
-        console.log("A limpar coleções antigas para evitar duplicados..."); //
-        await db.collection('admins').deleteMany({}); //
+        console.log("A limpar coleções antigas para evitar duplicados..."); 
+        await db.collection('admins').deleteMany({}); 
         await db.collection('atendentes').deleteMany({});
         await db.collection('barbeiros').deleteMany({});
         await db.collection('clientes').deleteMany({});
         await db.collection('produtos').deleteMany({});
         await db.collection('vendas_produtos').deleteMany({});
-        await db.collection('agendamentos').deleteMany({}); //
+        await db.collection('agendamentos').deleteMany({}); 
         await db.collection('historico_servicos').deleteMany({});
 
         console.log("A gerar dados de teste para a Barbearia...");
 
         // 1. Criar Administrador
-        const idAdmin = new ObjectId(); //
+        const idAdmin = new ObjectId(); 
         await db.collection('admins').insertOne({
             _id: idAdmin,
             nome: "Carlos Admin",
@@ -39,7 +39,7 @@ async function povoarBanco() {
         });
 
         // 2. Criar Atendentes
-        const idAtendente1 = new ObjectId(); //
+        const idAtendente1 = new ObjectId(); 
         const idAtendente2 = new ObjectId();
         await db.collection('atendentes').insertMany([
             {
@@ -157,7 +157,7 @@ async function povoarBanco() {
             }
         ]);
 
-        // 5. Criar Produtos 
+        // 5. Criar Produtos (Campo corrigido para 'estoque' para bater com as rotas)
         const idProduto1 = new ObjectId();
         const idProduto2 = new ObjectId();
         const idProduto3 = new ObjectId();
@@ -167,27 +167,27 @@ async function povoarBanco() {
                 nome: "Pomada Modeladora Efeito Matte",
                 marca: "Barba Forte",
                 preco: 45.90,
-                qnt_estoque: 50,
+                estoque: 50,
                 id_atendente: idAtendente1,
-                data_cadastro: new Date() //
+                data_cadastro: new Date() 
             },
             {
                 _id: idProduto2,
                 nome: "Óleo Hidratante para Barba Premium",
                 marca: "Sobrebarba",
                 preco: 39.90,
-                qnt_estoque: 30,
+                estoque: 30,
                 id_atendente: idAtendente1,
-                data_cadastro: new Date() //
+                data_cadastro: new Date() 
             },
             {
                 _id: idProduto3,
                 nome: "Shampoo de Cabelo e Barba Mentolado",
                 marca: "Viking Brand",
                 preco: 34.90,
-                qnt_estoque: 40,
+                estoque: 40,
                 id_atendente: idAtendente2,
-                data_cadastro: new Date() //
+                data_cadastro: new Date() 
             }
         ]);
 
@@ -202,7 +202,7 @@ async function povoarBanco() {
                 id_atendente: idAtendente1,
                 id_barbeiro: idBarbeiro1,
                 id_cliente: idCliente1,
-                data_criacao: new Date() //
+                data_criacao: new Date() 
             },
             {
                 data: "2026-07-10",
@@ -213,7 +213,7 @@ async function povoarBanco() {
                 id_atendente: idAtendente1,
                 id_barbeiro: idBarbeiro1,
                 id_cliente: idCliente2,
-                data_criacao: new Date() //
+                data_criacao: new Date() 
             },
             {
                 data: "2026-07-11",
@@ -224,7 +224,7 @@ async function povoarBanco() {
                 id_atendente: idAtendente2,
                 id_barbeiro: idBarbeiro2,
                 id_cliente: idCliente3,
-                data_criacao: new Date() //
+                data_criacao: new Date() 
             }
         ]);
 
@@ -235,14 +235,14 @@ async function povoarBanco() {
                 valor: 60.00,
                 id_barbeiro: idBarbeiro1,
                 id_cliente: idCliente1,
-                data: new Date() //
+                data: new Date() 
             },
             {
                 servico_realizado: "Barboterapia completa com óleos essenciais",
                 valor: 40.00,
                 id_barbeiro: idBarbeiro2,
                 id_cliente: idCliente2,
-                data: new Date() //
+                data: new Date() 
             }
         ]);
 
@@ -254,7 +254,7 @@ async function povoarBanco() {
                 id_atendente: idAtendente1,
                 quantidade: 1,
                 valor_total: 45.90,
-                data: new Date() //
+                data: new Date() 
             },
             {
                 id_produto: idProduto2,
@@ -262,9 +262,9 @@ async function povoarBanco() {
                 id_atendente: idAtendente2,
                 quantidade: 2,
                 valor_total: 79.80,
-                data: new Date() //
+                data: new Date() 
             }
-        ]); //
+        ]); 
 
         console.log("\n=========================================");
         console.log(" Base de dados Povoada com Sucesso!   ");

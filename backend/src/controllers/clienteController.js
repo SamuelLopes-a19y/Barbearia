@@ -12,13 +12,11 @@ module.exports = {
             const dados = req.body;
             const erros = [];
 
-            // Validação dos dados do Cliente
-            const errosCliente = Cliente.validarCliente(dados);
-            if (errosCliente.length > 0) erros.push(...errosCliente);
+            const erroscliente = cliente.validarcliente(dados);
+            if (erroscliente.length > 0) erros.push(...erroscliente);
 
-            // Verifica duplicidade se não houver erros prévios de validação
             if (erros.length === 0) {
-                const usuarioExistente = await ClienteRepo.findByCpfOrEmail(dados.cpf, dados.email);
+                const usuarioExistente = await clienteRepo.findByCpfOrEmail(dados.cpf, dados.email);
                 if (usuarioExistente) {
                     if (usuarioExistente.cpf === dados.cpf) erros.push("CPF já existe.");
                     if (usuarioExistente.email === dados.email) erros.push("E-mail já existe.");
@@ -29,29 +27,50 @@ module.exports = {
                 return res.status(400).json({ erros });
             }
 
-            const { nome, cpf, email, senha, dataNasc, endereco, telefone, tipoCabelo, preferencias } = dados;
+            const { nome, cpf, email, senha, dataNasc, endereco, telefone, especialidades, descricao } = dados;
 
-            const cliente = new Cliente(
-                nome, 
-                cpf, 
-                email, 
-                senha, 
-                dataNasc, 
-                endereco, 
-                telefone, 
-                tipoCabelo, 
-                preferencias
-            );
+            const cliente = new cliente(
+                nome, cpf, email, senha, dataNasc, endereco, telefone, especialidades, descricao
+            );  
 
-            // Criptografa a senha 
             await cliente.hashPassword();
 
-            const resultado = await ClienteRepo.create(cliente);
+            const resultado = await clienteRepo.create(cliente);
 
             res.status(201).json({
-                mensagem: "Cliente cadastrado com sucesso!",
+                mensagem: "cliente cadastrado com sucesso!",
                 id_cliente: resultado.insertedId
             });
+
+        } catch (error) {
+            res.status(500).json({ erro: error.message });
+        }
+    },
+
+    async list(req, res) {
+        try {
+            const clientes = await clienteRepo.findAll();
+            res.json(clientes);
+        } catch (error) {
+            res.status(500).json({ erro: error.message });
+        }
+    },
+
+    async select(req, res) {
+        try {
+            const id = req.query.id || req.body.id;
+
+            if (!id) {
+                return res.status(400).json({ erro: "ID do cliente não fornecido para a busca." });
+            }
+
+            const cliente = await clienteRepo.findById(id);
+
+            if (!cliente) {
+                return res.status(404).json({ erro: "cliente não encontrado." });
+            }
+
+            res.status(200).json(cliente);
         } catch (error) {
             res.status(500).json({ erro: error.message });
         }
@@ -107,13 +126,13 @@ module.exports = {
             };
 
             // Revalidação dos dados atualizados
-            const errosValidacao = Cliente.validarCliente(dados);
+            /*const errosValidacao = Cliente.validarCliente(dados);
             if (errosValidacao.length > 0) erros.push(...errosValidacao);
             
             if (endereco) {
                 const errosEnd = Endereco.validarEndereco(endereco);
                 if (errosEnd.length > 0) erros.push(...errosEnd);
-            }
+            }*/
 
             if (erros.length === 0) {
                 const usuarioExistente = await ClienteRepo.findByCpfOrEmail(cpf, email);

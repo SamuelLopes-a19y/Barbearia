@@ -1,7 +1,10 @@
 ### Variáveis Globais
 @baseUrl = http://localhost:3001
 
-### 0. Realizar Login (Guarda o token automaticamente)
+### =================================================================
+### 0. AUTENTICAÇÃO - OK!
+### =================================================================
+
 # @name fazerLogin
 POST {{baseUrl}}/login
 Content-Type: application/json
@@ -17,37 +20,39 @@ Content-Type: application/json
 
 
 ### =================================================================
+### 1. CLIENTES
+### =================================================================
 
-### 1. Criar um Novo Cliente (POST)  - Requisição OK!
+### 1.1 Criar um Novo Cliente (POST)
 POST {{baseUrl}}/clientes
 Content-Type: application/json
 Authorization: Bearer {{token}}
 
 {
-  "nome": "Patrik Silva",
-  "cpf": "12345678901",
-  "email": "patrik@email.com",
+  "nome": "Jason Solomon",
+  "cpf": "321.996.789-01",
+  "email": "solomon@email.com",
   "senha": "senhaSegura123",
   "dataNasc": "1995-05-15",
-  "telefone": "11999999999",
+  "telefone": "11999999988",
   "tipoCabelo": "Crespo",
   "preferencias": "Gosta de café, não usa navalha",
   "endereco": {
-    "rua": "Rua das Flores",
-    "numero": 123,
-    "bairro": "Centro",
-    "cidade": "São Paulo",
-    "estado": "SP",
-    "cep": "01001-000"
+    "estado": "Minas Gerais", 
+    "cidade": "João Monlevade", 
+    "bairro": "Centro", 
+    "rua": "Av. Teste", 
+    "cep": "35930-000", 
+    "numero": "100"
   }
 }
 
-### 2. Listar Todos os Clientes (GET)  - Requisição OK!
+### 1.2 Listar Todos os Clientes (GET) - OK!
 GET {{baseUrl}}/clientes
 Authorization: Bearer {{token}}
 
-### 3. Selecionar um Cliente Específico por ID (POST) - A testar
-POST {{baseUrl}}/clientes/detalhes
+### 1.3 Selecionar um Cliente Específico (GET ou POST) 0 OK!
+GET {{baseUrl}}/clientes/buscar
 Content-Type: application/json
 Authorization: Bearer {{token}}
 
@@ -55,28 +60,185 @@ Authorization: Bearer {{token}}
   "id": "6a4c6f6b078be4bf93ccae06"
 }
 
-### 4. Atualizar um Cliente (PUT)  - Requisição OK!
+### 1.4 Atualizar um Cliente (PUT) - OK!
 PUT {{baseUrl}}/clientes
 Content-Type: application/json
 Authorization: Bearer {{token}}
 
 {
   "id_cliente": "6a4c6f6b078be4bf93ccae06",
-  "id_admin": "6a4c6f6b078be4bf93ccae00",
-  "nome": "Patrik Silva Atualizado",
-  "cpf": "12345999901",
-  "email": "patrik.atualizado@email.com",
-  "dataNasc": "1995-05-15",
-  "telefone": "11999999999",
-  "tipoCabelo": "Crespo",
-  "preferencias": "Mudou de ideia: agora prefere chá"
+  "id_atendente": "6a4c6f6b078be4bf93ccae01",
+  "nome": "Patrik Silva Atualizadov2",
+  "telefone": "11988887700",
+  "preferencias": "Mudou de ideia: agora prefere salada"
 }
 
-### 5. Deletar um Cliente (DELETE) - Requisição OK!
+### 1.5 Deletar um Cliente (DELETE) - OK!
 DELETE {{baseUrl}}/clientes
 Content-Type: application/json
 Authorization: Bearer {{token}}
 
 {
-  "id": "6a4c6f6b078be4bf93ccae07"
+  "id": "6a4c6f6b078be4bf93ccae08"
+}
+
+
+### =================================================================
+### 2. PRODUTOS E ESTOQUE
+### =================================================================
+
+### 2.1 Criar um Novo Produto (POST) - OK!
+POST {{baseUrl}}/produtos
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "nome": "Pomada Modeladora Efeito Matte",
+  "marca": "Barba Forte",
+  "preco": 45.90,
+  "estoque": 50,
+  "id_atendente": "6a4c6f6b078be4bf93ccae01"
+}
+
+### 2.2 Listar Todos os Produtos (GET) - OK!
+GET {{baseUrl}}/produtos
+Authorization: Bearer {{token}}
+
+### 2.3 Selecionar um Produto Específico (POST) - OK!
+GET {{baseUrl}}/produtos/buscar
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "id": "6a4c6f6b078be4bf93ccae0a"
+}
+
+### 2.4 Atualizar um Produto (PUT) - OK!
+PUT {{baseUrl}}/produtos
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "id_produto": "6a4c6f6b078be4bf93ccae0a",
+  "nome": "Pomada Modeladora Efeito Matte 150ml",
+  "marca": "Barba Forte VIP",
+  "estoque": 45
+}
+
+### 2.5 Deletar um Produto (DELETE) - OK
+DELETE {{baseUrl}}/produtos
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "id": "6a4c6f6b078be4bf93ccae0a"
+}
+
+
+### =================================================================
+### 3. BARBEIROS
+### =================================================================
+
+### 3.1 Criar um Novo Barbeiro (POST) OK!
+POST {{baseUrl}}/barbeiros
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "nome": "João do Corte",
+  "cpf": "111.999.888-77",
+  "email": "joao.corte@barbearia.com",
+  "senha": "123",
+  "dataNasc": "1990-01-01",
+  "telefone": "31900000000",
+  "especialidades": "Fade e Pigmentação",
+  "descricao": "Especialista em disfarçado",
+  "endereco": {
+    "estado": "Minas Gerais", 
+    "cidade": "João Monlevade", 
+    "bairro": "Centro", 
+    "rua": "Av. Teste", 
+    "cep": "35930-000", 
+    "numero": "100"
+  }
+}
+
+### 3.2 Listar Todos os Barbeiros (GET) - OK!
+GET {{baseUrl}}/barbeiros
+Authorization: Bearer {{token}}
+
+### 3.3 Buscar Barbeiro Específico (GET com Query Param) - OK!
+GET {{baseUrl}}/barbeiros/buscar?id=6a5163a8bdd227ed0d06176f
+Authorization: Bearer {{token}}
+
+### 3.4 Atualizar um Barbeiro (PUT) - OK!
+PUT {{baseUrl}}/barbeiros
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "id": "6a5163a8bdd227ed0d06176f",
+  "especialidades": "Fade, Pigmentação e Barboterapia"
+}
+
+
+### =================================================================
+### 4. ATENDENTES
+### =================================================================
+
+### 4.1 Criar um Novo Atendente (POST) - OK!
+POST {{baseUrl}}/atendentes
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "nome": "Ana Recepção",
+  "cpf": "222.888.777-66",
+  "email": "ana@barbearia.com",
+  "senha": "123",
+  "dataNasc": "1998-10-15",
+  "telefone": "31911112222",
+  "turno": "Noite",
+  "endereco": {
+    "estado": "MG", "cidade": "João Monlevade", "bairro": "Centro", "rua": "Rua X", "cep": "35930-000", "numero": "1"
+  }
+}
+
+### 4.2 Listar Todos os Atendentes (GET) - OK!
+GET {{baseUrl}}/atendentes
+Authorization: Bearer {{token}}
+
+### =================================================================
+### 5. VENDAS DE PRODUTOS
+### =================================================================
+
+### 5.1 Registrar uma nova venda (POST)
+POST {{baseUrl}}/vendas/produtos
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "id_produto": "6a4c6f6b078be4bf93ccae09",
+  "id_cliente": "6a4c6f6b078be4bf93ccae06",
+  "id_atendente": "6a4c6f6b078be4bf93ccae01",
+  "quantidade": 2
+}
+
+### 5.2 Listar Todas as Vendas (GET)
+GET {{baseUrl}}/vendas/produtos
+Authorization: Bearer {{token}}
+
+### 6.1 Listar a Agenda do Barbeiro Logado (GET)
+# Obs: Faça login como um barbeiro antes de rodar esta rota para pegar o token dele
+GET {{baseUrl}}/agendamentos
+Authorization: Bearer {{token}}
+
+### 6.2 Atualizar Status de um Agendamento (PUT)
+PUT {{baseUrl}}/agendamentos
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "id": "650c6f6b078be4bf93ccae05",
+  "status": "Concluído"
 }

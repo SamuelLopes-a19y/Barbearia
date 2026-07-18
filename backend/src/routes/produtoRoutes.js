@@ -1,18 +1,17 @@
 const { Router } = require('express');
 
-const VendaProdutoController = require('../controllers/vendaProdutoController');
+const ProdutoController = require('../controllers/produtoController');
 
 const auth = require('../middlewares/auth');
 const authAtendente = require('../middlewares/authAtendente'); 
 
 const routes = new Router();
 
-routes.post('/produtos', auth, authAtendente, VendaProdutoController.create);
-routes.put('/produtos', auth, authAtendente, VendaProdutoController.update);
-routes.delete('/produtos', auth, authAtendente, VendaProdutoController.delete);
-routes.get('/produtos', auth, authAtendente, VendaProdutoController.list);
-routes.get('/produtos/buscar', auth, authAtendente, VendaProdutoController.select);
-
-routes.post('/produtos/vender', auth, authAtendente, VendaProdutoController.realizarVenda);
+routes.post('/produtos', auth, authAtendente, ProdutoController.create);
+routes.put('/produtos', auth, authAtendente, ProdutoController.update);
+routes.delete('/produtos', auth, authAtendente, ProdutoController.delete);
+routes.get('/produtos', auth, authAtendente, ProdutoController.list);
+routes.get('/produtos/buscar', auth, authAtendente, ProdutoController.select);
+routes.post('/produtos/vender', auth, authAtendente, ProdutoController.realizarVenda);
 
 module.exports = routes;

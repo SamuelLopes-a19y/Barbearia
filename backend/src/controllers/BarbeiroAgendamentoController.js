@@ -1,4 +1,5 @@
 const { ObjectId } = require('mongodb');
+const BarbeiroRepo = require('../repositories/barbeiroRepository');
 
 module.exports = {
     async list(req, res) {

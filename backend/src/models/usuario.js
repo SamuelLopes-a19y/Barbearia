@@ -1,4 +1,5 @@
 const bcryptjs = require('bcryptjs');
+const Endereco = require('../models/EnderecoModel');
 
 class Usuario {
     constructor(nome, cpf, tipoPerfil, email, senha, dataNasc, enderecoData, telefone) {
