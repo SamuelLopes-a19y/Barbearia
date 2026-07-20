@@ -10,13 +10,13 @@ module.exports = {
 
     async create(req, res) {
         try {
-            const { nome, marca, estoque, id_atendente } = req.body;
+            const { nome, marca, qnt_estoque, id_atendente } = req.body;
             const erros = [];
 
             if (!nome) erros.push("O campo 'nome' é obrigatório.");
             if (!marca) erros.push("O campo 'marca' é obrigatório.");
             if (!id_atendente) erros.push("O campo 'id_atendente' é obrigatório (Quem está cadastrando?).");
-            if (estoque && typeof estoque !== 'number') erros.push("Quantidade de estoque inválida.");
+            if (qnt_estoque !== undefined && typeof qnt_estoque !== 'number') erros.push("Quantidade de estoque inválida.");
             
             const atendente = await AtendenteRepo.findById(id_atendente);
             if (!atendente) erros.push("Atendente não encontrado.");
@@ -26,7 +26,7 @@ module.exports = {
             const produto = new Produto(
                 nome,
                 marca,
-                estoque,
+                qnt_estoque || 0,
                 new ObjectId(id_atendente)
             );
             
@@ -67,7 +67,7 @@ module.exports = {
 
     async update(req, res) {
         try {
-            const { nome, marca, estoque, id_produto } = req.body;
+            const { nome, marca, qnt_estoque, _id: id_produto } = req.body;
             const erros = [];
             
             if (!id_produto) return res.status(400).json({ erro: "ID do produto é obrigatório." });
@@ -76,7 +76,7 @@ module.exports = {
 
             if (!nome) erros.push("O campo 'nome' é obrigatório.");
             if (!marca) erros.push("O campo 'marca' é obrigatório.");
-            if (estoque && typeof estoque !== 'number') erros.push("Quantidade de estoque inválida.");
+            if (qnt_estoque !== undefined && typeof qnt_estoque !== 'number') erros.push("Quantidade de estoque inválida.");
             if (!produto) erros.push("Produto não encontrado.");
             
             if (erros.length > 0) return res.status(400).json({ erros });
@@ -84,7 +84,7 @@ module.exports = {
             const dadosAtualizados = {
                 nome,
                 marca,
-                estoque,
+                qnt_estoque: qnt_estoque !== undefined ? qnt_estoque : produto.qnt_estoque,
             };
 
             await ProdutoRepo.update(id_produto, dadosAtualizados);
@@ -135,8 +135,8 @@ module.exports = {
             if (!atendente) return res.status(404).json({ erro: "Atendente não encontrado." });
             
             // Verifica se tem pomada/óleo suficiente no estoque da barbearia
-            if (produto.estoque < quantidade) {
-                return res.status(400).json({ erro: `Estoque insuficiente. Disponível: ${produto.estoque}` });
+            if (produto.qnt_estoque < quantidade) {
+                return res.status(400).json({ erro: `Estoque insuficiente. Disponível: ${produto.qnt_estoque}` });
             }
 
             // Desconta do estoque
@@ -154,7 +154,7 @@ module.exports = {
 
             res.status(200).json({ 
                 mensagem: "Venda realizada e registrada com sucesso!",
-                estoque_restante: produto.estoque - quantidade,
+                estoque_restante: produto.qnt_estoque - quantidade,
                 comprovante: registroVenda
             });
 

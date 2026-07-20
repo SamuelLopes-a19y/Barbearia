@@ -66,9 +66,10 @@ module.exports = {
     async update(req, res) {
         try {
             console.log(req.body)
-            const { _id,id_recep,id_admin,...dados} = req.body;
+            const { _id: atendenteId, id_recep, id_admin, ...dados } = req.body;
+            const id = atendenteId;
 
-            if (!_id) {
+            if (!id) {
                 return res.status(400).json({ erro: "ID obrigatório." });
             }
 
@@ -78,7 +79,7 @@ module.exports = {
                 dados.senha = await bcryptjs.hash(dados.senha, 10);
             }
 
-            const resultado = await AtendenteRepo.update(_id, dados);
+            const resultado = await AtendenteRepo.update(id, dados);
 
             if (resultado.matchedCount === 0 || !resultado) {
                 return res.status(404).json({ erro: "Atendente não encontrado." });

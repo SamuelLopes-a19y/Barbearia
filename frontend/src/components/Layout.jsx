@@ -4,15 +4,13 @@ import {
   LayoutDashboard, 
   Users, 
   Calendar, 
-  Stethoscope, 
-  Activity,
-  Pill,
-  ClipboardList,
+  Scissors,
+  Search,
   LogOut,
   Menu,
   X,
   House,
-  Search
+  Package
 } from 'lucide-react';
 import '../styles/Layout.css';
 
@@ -22,11 +20,12 @@ export const Sidebar = ({ currentPage, onNavigate, isOpen, onClose }) => {
   const getMenuItems = () => {
     const role = currentUser?.role;
 
-    if (role === 'recepcionista') {
+    if (role === 'atendente') {
       return [
         { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
         { id: 'users', label: 'Gestão de Usuários', icon: Users },
-        { id: 'scheduling', label: 'Agendamentos', icon: Calendar }
+        { id: 'scheduling', label: 'Agendamentos', icon: Calendar },
+        { id: 'store', label: 'Estoque', icon: Package }
       ];
     }
 
@@ -35,24 +34,15 @@ export const Sidebar = ({ currentPage, onNavigate, isOpen, onClose }) => {
         { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
         { id: 'users', label: 'Gestão de Usuários', icon: Users },
         { id: 'scheduling', label: 'Agendamentos', icon: Calendar },
-        { id: 'queue', label: 'Fila de Atendimento', icon: ClipboardList },
         { id: 'history', label: 'Histórico de Clientes', icon: Search },
-        // { id: 'triage', label: 'Triagem', icon: Activity },
-        { id: 'store', label: 'Loja', icon: Pill }
+        { id: 'store', label: 'Estoque', icon: Package }
       ];
     }
 
-    if (role === 'enfermeiro') {
+    if (role === 'barbeiro') {
       return [
-        { id: 'triage', label: 'Triagem', icon: Activity },
-        { id: 'store', label: 'Farmácia', icon: Pill }
-      ];
-    }
-
-    if (role === 'medico') {
-      return [
-        { id: 'queue', label: 'Fila de Atendimento', icon: ClipboardList },
-        { id: 'history', label: 'Histórico de Pacientes', icon: Search }
+        { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
+        { id: 'history', label: 'Histórico de Clientes', icon: Search }
       ];
     }
 
@@ -76,7 +66,7 @@ export const Sidebar = ({ currentPage, onNavigate, isOpen, onClose }) => {
             <div className="sidebar-logo">
               <House size={20} />
             </div>
-            <span className="sidebar-brand-text">DOMÍNIO</span>
+            <span className="sidebar-brand-text">BARBEARIA</span>
           </div>
           <button
             className="btn-ghost btn-icon sidebar-close-btn"
@@ -127,9 +117,8 @@ export const TopBar = ({ onMenuClick }) => {
   const getRoleName = (role) => {
     const roles = {
       admin: 'Administrador',
-      recepcionista: 'Recepcionista',
-      enfermeiro: 'Enfermeiro',
-      medico: 'Médico',
+      atendente: 'Atendente',
+      barbeiro: 'Barbeiro',
     };
     return roles[role] || role;
   };

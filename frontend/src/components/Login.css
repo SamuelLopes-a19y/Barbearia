@@ -3,7 +3,7 @@
   align-items: center;
   justify-content: center;
   min-height: 100vh;
-  /* background: linear-gradient(135deg, var(--verde-claro), var(--branco)); */
+  /* background: linear-gradient(135deg, var(--laranja-claro), var(--branco)); */
 }
 
 .login-card {
@@ -16,7 +16,7 @@
 }
 
 .login-button {
-  background-color: var(--verde-barbearia);
+  background-color: var(--laranja-barbearia);
   color: white;
   width: 100%;
   padding: 10px;

@@ -124,8 +124,8 @@ module.exports = {
             if (!cliente) return res.status(404).json({ erro: "Cliente não encontrado." });
             if (!atendente) return res.status(404).json({ erro: "Atendente não encontrado." });
             
-            if (produto.estoque < quantidade) {
-                return res.status(400).json({ erro: `Estoque insuficiente. Disponível: ${produto.estoque}` });
+            if (produto.qnt_estoque < quantidade) {
+                return res.status(400).json({ erro: `Estoque insuficiente. Disponível: ${produto.qnt_estoque}` });
             }
 
             await ProdutoRepo.diminuirEstoque(id_produto, quantidade);
@@ -141,7 +141,7 @@ module.exports = {
 
             res.status(200).json({ 
                 mensagem: "Venda realizada e registrada com sucesso!",
-                estoque_restante: produto.estoque - quantidade,
+                estoque_restante: produto.qnt_estoque - quantidade,
                 comprovante: registroVenda
             });
 

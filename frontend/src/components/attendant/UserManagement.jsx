@@ -14,12 +14,12 @@ export const UserManagement = () => {
 
       <div className="tabs">
         <div className="tabs-list">
-          <button className={`tab-trigger ${activeTab === 'clients' ? 'active' : ''}`} onClick={() => setActiveTab('clients')}>clientes</button>
-          <button className={`tab-trigger ${activeTab === 'doctors' ? 'active' : ''}`} onClick={() => setActiveTab('doctors')}>barbeiros</button>
-          <button className={`tab-trigger ${activeTab === 'receptionists' ? 'active' : ''}`} onClick={() => setActiveTab('receptionists')}>atendentes</button>
+          <button className={`tab-trigger ${activeTab === 'clients' ? 'active' : ''}`} onClick={() => setActiveTab('clients')}>Clientes</button>
+          <button className={`tab-trigger ${activeTab === 'barbers' ? 'active' : ''}`} onClick={() => setActiveTab('barbers')}>Barbeiros</button>
+          <button className={`tab-trigger ${activeTab === 'receptionists' ? 'active' : ''}`} onClick={() => setActiveTab('receptionists')}>Atendentes</button>
         </div>
         <div className={`tab-content ${activeTab === 'clients' ? 'active' : ''}`}><ClientsTab /></div>
-        <div className={`tab-content ${activeTab === 'doctors' ? 'active' : ''}`}><DoctorsTab /></div>
+        <div className={`tab-content ${activeTab === 'barbers' ? 'active' : ''}`}><BarbersTab /></div>
         <div className={`tab-content ${activeTab === 'receptionists' ? 'active' : ''}`}><ReceptionistsTab /></div>
       </div>
     </div>
@@ -29,7 +29,7 @@ export const UserManagement = () => {
 /* --- COMPONENTE ENDEREÇO REUTILIZÁVEL --- */
 const AddressForm = ({ endereco, onChange }) => (
   <div className="form-group form-group-full">
-    <h3 style={{ marginBottom: '15px', color: '#1B5E20', fontSize: '16px', borderBottom: '1px solid #ccc', paddingBottom: '5px', marginTop: '10px' }}>
+    <h3 style={{ marginBottom: '15px', color: '#F05A11', fontSize: '16px', borderBottom: '1px solid #ccc', paddingBottom: '5px', marginTop: '10px' }}>
       Endereço
     </h3>
     <div className="form-grid">
@@ -106,9 +106,9 @@ const ClientsTab = () => {
     try {
       
       if (editingCliente) {
-        payload.id_cliente = editingCliente._id;
+        payload._id = editingCliente._id;
         if (authData?.role === 'admin') payload.id_admin = authData.id;
-        else payload.id_recep = authData.id;
+        else payload.id_atendente = authData.id;
         const res = await fetch('http://localhost:3001/clientes', { method: 'PUT', headers: headers, body: JSON.stringify(payload) });
 
         alert((await res.json()).mensagem)
@@ -132,21 +132,21 @@ const ClientsTab = () => {
 
   return (
     <div>
-      <div className="actions-bar"><button className="btn btn-success" onClick={() => setIsOpen(true)}><Plus size={16} /> Adicionar cliente</button></div>
+      <div className="actions-bar"><button className="btn btn-success" onClick={() => setIsOpen(true)}><Plus size={16} /> Adicionar Cliente</button></div>
       <div className="table-container">
         <table className="table">
           <thead><tr><th>Nome</th><th>CPF</th><th>Email</th><th style={{ textAlign: 'right' }}>Ações</th></tr></thead>
           <tbody>{clients.map(p => (<tr key={p._id}><td>{p.nome}</td><td>{p.cpf}</td><td>{p.email}</td><td>
             <div className="table-actions">
-              <button className="btn-ghost btn-icon" onClick={() => handleEdit(p)}><Pencil size={16} /></button>
-              <button className="btn-ghost btn-icon" onClick={() => handleDelete(p._id)}><Trash2 size={16} /></button>
+<button className="btn-ghost btn-icon btn-edit" onClick={() => handleEdit(p)} title="Editar"><Pencil size={16} /></button>
+              <button className="btn-ghost btn-icon btn-delete" onClick={() => handleDelete(p._id)} title="Excluir"><Trash2 size={16} /></button>
             </div></td></tr>))}</tbody>
         </table>
       </div>
       {isOpen && (
         <div className="modal-overlay" onClick={() => { setIsOpen(false); resetForm(); }}>
           <div className="modal-content" onClick={e => e.stopPropagation()}>
-            <div className="modal-header"><h2 className="modal-title">{editingCliente ? 'Editar cliente' : 'Novo cliente'}</h2></div>
+            <div className="modal-header"><h2 className="modal-title">{editingCliente ? 'Editar Cliente' : 'Novo Cliente'}</h2></div>
             <div className="modal-body">
               <form onSubmit={handleSubmit}>
 
@@ -205,10 +205,10 @@ const ClientsTab = () => {
 };
 
 /* --- ABA BARBEIROSS --- */
-const DoctorsTab = () => {
-  const [doctors, setDoctors] = useState([]);
+const BarbersTab = () => {
+  const [barbers, setBarbers] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
-  const [editingDoctor, setEditingDoctor] = useState(null);
+  const [editingBarber, setEditingBarber] = useState(null);
   const [formData, setFormData] = useState({
     nome: '', cpf: '', email: '', senha: '', dataNasc: '', telefone: '', uf: '', especialidade: '', descricao: '',
     endereco: { estado: '', cidade: '', bairro: '', rua: '', cep: '', numero: '' }
@@ -219,17 +219,17 @@ const DoctorsTab = () => {
       const token = JSON.parse(localStorage.getItem('@Barbearia:user'))?.token;
       const res = await fetch('http://localhost:3001/barbeiros', { headers: { 'Authorization': `Bearer ${token}` } });
       return {
-        doctors: res.ok ? await res.json() : [],
+        barbers: res.ok ? await res.json() : [],
       }
     } catch (e) { console.error(e); }
   }, []);
 
   useEffect(() => { fetchBarbeiros().then(data => {
-    setDoctors(data.doctors);
+    setBarbers(data.barbers);
   }); }, [fetchBarbeiros]);
 
   const handleEdit = (d) => {
-    setEditingDoctor(d);
+    setEditingBarber(d);
     setFormData({ ...d, dataNasc: d.dataNasc ? d.dataNasc.split('T')[0] : '', senha: '', endereco: d.endereco || { estado: '', cidade: '', bairro: '', rua: '', cep: '', numero: '' } });
     setIsOpen(true);
   };
@@ -241,16 +241,17 @@ const DoctorsTab = () => {
     const headers = { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` };
 
     const payload = { ...formData, telefone: Number(formData.telefone) };
-    if (editingDoctor) {
+    if (editingBarber) {
+      payload._id = editingBarber._id;
       if (authData?.role === 'admin') payload.id_admin = authData.id;
-      else payload.id_recep = authData.id;
+      else payload.id_atendente = authData.id;
       const res = await fetch('http://localhost:3001/barbeiros', { method: 'PUT', headers, body: JSON.stringify(payload) });
       console.log(await res.json())
     } else {
       const res = await fetch('http://localhost:3001/barbeiros', { method: 'POST', headers, body: JSON.stringify(payload) });
       console.log(await res.json())
     }
-    fetchBarbeiros(); setIsOpen(false); setEditingDoctor(null);
+    fetchBarbeiros(); setIsOpen(false); setEditingBarber(null);
   };
 
   const handleDelete = async (id) => {
@@ -275,14 +276,14 @@ const DoctorsTab = () => {
       <div className="table-container">
         <table className="table">
           <thead><tr><th>Nome</th><th>E-mail</th><th>Especialidade</th><th style={{ textAlign: 'right' }}>Ações</th></tr></thead>
-          <tbody>{doctors.map(d => (<tr key={d._id}><td>{d.nome}</td><td>{d.email}</td><td>{d.especialidade}</td><td><div className="table-actions"><button className="btn-ghost btn-icon" onClick={() => handleEdit(d)}><Pencil size={16} /></button>
-          <button className="btn-ghost btn-icon" onClick={() => handleDelete(d._id)}><Trash2 size={16} /></button></div></td></tr>))}</tbody>
+          <tbody>{barbers.map(d => (<tr key={d._id}><td>{d.nome}</td><td>{d.email}</td><td>{d.especialidade}</td><td><div className="table-actions"><button className="btn-ghost btn-icon btn-edit" onClick={() => handleEdit(d)} title="Editar"><Pencil size={16} /></button>
+          <button className="btn-ghost btn-icon btn-delete" onClick={() => handleDelete(d._id)} title="Excluir"><Trash2 size={16} /></button></div></td></tr>))}</tbody>
         </table>
       </div>
       {isOpen && (
         <div className="modal-overlay" onClick={() => setIsOpen(false)}>
           <div className="modal-content" onClick={e => e.stopPropagation()}>
-            <div className="modal-header"><h2 className="modal-title">{editingDoctor ? 'Editar Barbeiro' : 'Novo Barbeiro'}</h2></div>
+            <div className="modal-header"><h2 className="modal-title">{editingBarber ? 'Editar Barbeiro' : 'Novo Barbeiro'}</h2></div>
             <div className="modal-body">
               <form onSubmit={handleSubmit}>
                 <div className="form-grid">
@@ -304,7 +305,7 @@ const DoctorsTab = () => {
                   
                   <div className="form-group">
                     <label className="label">Senha</label>
-                  <input className="input" type="password" value={formData.senha} onChange={e => setFormData({ ...formData, senha: e.target.value })} required={!editingDoctor} autoComplete=""/></div>
+                  <input className="input" type="password" value={formData.senha} onChange={e => setFormData({ ...formData, senha: e.target.value })} required={!editingBarber} autoComplete=""/></div>
                   
                   <div className="form-group">
                     <label className="label">Data Nasc.</label>
@@ -390,9 +391,9 @@ const ReceptionistsTab = () => {
 
     const payload = { ...formData };
     if (editingReceptionist) {
-      payload.id_recep = editingReceptionist._id;
+      payload._id = editingReceptionist._id;
       if (authData?.role === 'admin') payload.id_admin = authData.id;
-      else payload.id_recep_m = authData.id;
+      else payload.id_atendente = authData.id;
       const res = await fetch('http://localhost:3001/atendentes', { method: 'PUT', headers, body: JSON.stringify(payload) });
       console.log(await res.json())
     } else {
@@ -413,20 +414,20 @@ const ReceptionistsTab = () => {
 
   return (
     <div>
-      <div className="actions-bar"><button className="btn btn-success" onClick={() => setIsOpen(true)}><Plus size={16} /> Adicionar atendente</button></div>
+      <div className="actions-bar"><button className="btn btn-success" onClick={() => setIsOpen(true)}><Plus size={16} /> Adicionar Atendente</button></div>
       <div className="table-container">
         <table className="table">
           <thead><tr><th>Nome</th><th>CPF</th><th>Turno</th><th style={{ textAlign: 'right' }}>Ações</th></tr></thead>
           <tbody>{receptionists.map(r => (<tr key={r._id}><td>{r.nome}</td><td>{r.cpf}</td><td>{r.turno}</td>
-          <td><div className="table-actions"><button className="btn-ghost btn-icon" onClick={() => handleEdit(r)}><Pencil size={16} /></button>
-          <button className="btn-ghost btn-icon" onClick={() => {handleDelete(r._id)}}><Trash2 size={16} /></button></div>
+          <td><div className="table-actions"><button className="btn-ghost btn-icon btn-edit" onClick={() => handleEdit(r)} title="Editar"><Pencil size={16} /></button>
+          <button className="btn-ghost btn-icon btn-delete" onClick={() => handleDelete(r._id)} title="Excluir"><Trash2 size={16} /></button></div>
           </td></tr>))}</tbody>
         </table>
       </div>
       {isOpen && (
         <div className="modal-overlay" onClick={() => setIsOpen(false)}>
           <div className="modal-content" onClick={e => e.stopPropagation()}>
-            <div className="modal-header"><h2 className="modal-title">{editingReceptionist ? 'Editar atendente' : 'Novo atendente'}</h2></div>
+            <div className="modal-header"><h2 className="modal-title">{editingReceptionist ? 'Editar Atendente' : 'Novo Atendente'}</h2></div>
             <div className="modal-body">
               <form onSubmit={handleSubmit}>
                 <div className="form-grid">

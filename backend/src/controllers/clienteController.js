@@ -1,6 +1,6 @@
 const bcryptjs = require('bcryptjs');
 const Cliente = require('../models/cliente'); 
-const ClienteRepo = require('../repositories/ClienteRepository');
+const ClienteRepo = require('../repositories/clienteRepository');
 const Endereco = require('../models/EnderecoModel'); 
 const AtendenteRepo = require('../repositories/atendenteRepository'); 
 const AdminRepo = require('../repositories/adminRepository');
@@ -98,7 +98,7 @@ module.exports = {
 
     async update(req, res) {
         try {
-            const { nome, cpf, email, dataNasc, endereco, telefone, tipoCabelo, preferencias, id_atendente, id_cliente, id_admin } = req.body;
+            const { nome, cpf, email, dataNasc, endereco, telefone, tipoCabelo, preferencias, id_atendente, _id: id_cliente, id_admin } = req.body;
             const erros = [];
             const novoCliente = new Cliente(req.body.nome, req.body.cpf, req.body.email, req.body.dataNasc, req.body.endereco, req.body.telefone, req.body.tipoCabelo, req.body.preferencias)
             // Validação de quem está alterando (Admin ou Atendente do salão/barbearia)

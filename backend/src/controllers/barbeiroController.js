@@ -76,9 +76,10 @@ module.exports = {
 
     async update(req, res) {
         try {
-            const {_id,id_admin, ...dados} = req.body;
+            const { _id: barbeiroId, id_admin, id_recep, ...dados } = req.body;
+            const id = barbeiroId;
  
-            if (!_id) {
+            if (!id) {
                 return res.status(400).json({ erro: "O ID do barbeiro é obrigatório para atualização." });
             }
 
@@ -90,7 +91,7 @@ module.exports = {
 
             dados.telefone = String(dados.telefone)
 
-            const resultado = await BarbeiroRepo.update(_id, dados);
+            const resultado = await BarbeiroRepo.update(id, dados);
 
             if (resultado.matchedCount === 0 || !resultado) {
                 return res.status(404).json({ erro: "Barbeiro não encontrado para atualização." });

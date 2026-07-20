@@ -14,14 +14,13 @@ const AppContent = () => {
   const { currentUser } = useApp();
   const [currentPage, setCurrentPage] = useState('dashboard');
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [consultationAppointmentId, setConsultationAppointmentId] = useState(null);
 
   if (!currentUser) {
     return <Login />;
   }
 
   const getDefaultPage = () => {
-    if (currentUser.role === 'atendente' || currentUser.role === 'admin') {
+    if (currentUser.role === 'atendente' || currentUser.role === 'admin' || currentUser.role === 'barbeiro') {
       return 'dashboard';
     }
     return 'dashboard';
@@ -30,20 +29,7 @@ const AppContent = () => {
   const actualPage = currentPage || getDefaultPage();
 
   const renderPage = () => {
-    // Handle doctor consultation flow
-    if (consultationAppointmentId && (currentUser.role === 'barbeiro' || currentUser.role === 'admin')) {
-      return (
-        <ConsultationPage
-          appointmentId={consultationAppointmentId}
-          onBack={() => {
-            setConsultationAppointmentId(null);
-            setCurrentPage('queue');
-          }}
-        />
-      );
-    }
-
-        // Nurse pages
+    // Admin pages
     if (currentUser.role === 'admin') {
       switch (actualPage) {
         case 'dashboard':
@@ -61,7 +47,8 @@ const AppContent = () => {
       }
     }
 
-    if (currentUser.role === 'recepcionista') {
+    // Atendente pages
+    if (currentUser.role === 'atendente') {
       switch (actualPage) {
         case 'dashboard':
           return <AttendantDashboard />;
@@ -69,37 +56,22 @@ const AppContent = () => {
           return <UserManagement />;
         case 'scheduling':
           return <Scheduling />;
-        case 'history':
-          return <ClienteHistory />;
+        case 'store':
+          return <StorePage />;
         default:
           return <AttendantDashboard />;
       }
     }
 
-    // Nurse pages
-    if (currentUser.role === 'enfermeiro') {
+    // Barbeiro pages
+    if (currentUser.role === 'barbeiro') {
       switch (actualPage) {
-        case 'store':
-          return <StorePage />;
-        default:
-      }
-    }
-
-    // Doctor pages
-    if (currentUser.role === 'medico') {
-      switch (actualPage) {
-        case 'consultation':
-          return <ConsultationPage
-              appointmentId={consultationAppointmentId}
-              onBack={() => {
-                setConsultationAppointmentId(null);
-                setCurrentPage('queue');
-              }}
-            />
-           
+        case 'dashboard':
+          return <AttendantDashboard />;
         case 'history':
           return <ClienteHistory />;
         default:
+          return <AttendantDashboard />;
       }
     }
 
@@ -112,7 +84,6 @@ const AppContent = () => {
         currentPage={actualPage}
         onNavigate={(page) => {
           setCurrentPage(page);
-          setConsultationAppointmentId(null);
         }}
         isOpen={sidebarOpen}
         onClose={() => setSidebarOpen(false)}

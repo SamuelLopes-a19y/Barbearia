@@ -20,8 +20,8 @@
 }
 
 .stock-alert {
-  background-color: var(--color-danger-light);
-  border-left: 4px solid var(--color-danger);
+  background-color: rgba(240, 90, 17, 0.1);
+  border-left: 4px solid var(--color-primary);
   padding: 1rem;
   border-radius: var(--radius);
   margin-bottom: 1.5rem;
@@ -29,11 +29,36 @@
 
 .stock-alert-title {
   font-weight: 600;
-  color: var(--color-danger);
+  color: var(--color-primary);
   margin-bottom: 0.5rem;
 }
 
 .stock-alert-text {
   font-size: 0.875rem;
   color: var(--color-text-secondary);
+}
+
+.table-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.4rem;
+}
+
+.btn-icon.btn-sell {
+  color: var(--color-primary);
+  border-radius: 50%;
+  transition: all 0.2s ease;
+  width: 32px;
+  height: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(240, 90, 17, 0.08);
+}
+
+.btn-icon.btn-sell:hover {
+  background-color: var(--color-primary);
+  color: #fff;
+  transform: scale(1.1);
+  box-shadow: 0 2px 8px rgba(240, 90, 17, 0.3);
 }

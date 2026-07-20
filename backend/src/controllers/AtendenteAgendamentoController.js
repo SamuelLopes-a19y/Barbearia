@@ -1,4 +1,3 @@
-const AgendamentoRepo = require('../repositories/baseRepository');
 const Agendamento = require('../models/agendamento')
 
 const { ObjectId } = require('mongodb');
@@ -38,9 +37,7 @@ module.exports = {
         try {
             const id  = req.body.id_agend;
             const db = require('../database').getDb();
-            const { id: _, ...dados } = req.body;
             const novoAgendamento = new Agendamento(req.body.data, req.body.descricao, req.body.status, req.body.horario, req.body.horarioFim, req.body.id_atendente, req.body.id_barbeiro, req.body.id_cliente);
-            console.log(dados)
             await db.collection('agendamentos').updateOne({ _id: new ObjectId(id) }, { $set: novoAgendamento });
             res.json({ mensagem: "Atualizado" });
         } catch (error) {

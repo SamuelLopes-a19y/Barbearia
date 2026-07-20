@@ -2,90 +2,88 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { Plus, Pencil, Trash2, AlertTriangle, Package, Minus } from 'lucide-react';
 import '../styles/Pharmacy.css';
 
+// Esta página é uma duplicata legada do StorePage.jsx.
+// Ela foi adaptada para barbearia, mas o componente principal de estoque é o StorePage.jsx.
 export const PharmacyPage = () => {
-  const [medications, setMedications] = useState([]);
-  const [nurses, setNurses] = useState([]); //
+  const [products, setProducts] = useState([]);
+  const [atendentes, setAtendentes] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
-  const [editingMed, setEditingMed] = useState(null);
+  const [editingProduct, setEditingProduct] = useState(null);
   const [formData, setFormData] = useState({
-    name: '',
-    activeIngredient: '',
-    quantity: 0,
-    id_enfer: '' //
+    nome: '',
+    marca: '',
+    qnt_estoque: 0,
+    id_atendente: ''
   });
   
-  const [dispenseModalOpen, setDispenseModalOpen] = useState(false);
-  const [selectedMedForDispense, setSelectedMedForDispense] = useState(null);
-  const [patients, setPatients] = useState([]);
-  const [dispenseData, setDispenseData] = useState({ patientId: '', quantity: 1, id_enfer: '' }); //
+  const [vendaModalOpen, setVendaModalOpen] = useState(false);
+  const [selectedProductForVenda, setSelectedProductForVenda] = useState(null);
+  const [clientes, setClientes] = useState([]);
+  const [vendaData, setVendaData] = useState({ id_cliente: '', quantidade: 1, id_atendente: '' });
 
-  const fetchMedications = async () => {
+  const fetchProducts = async () => {
     try {
-      const token = JSON.parse(localStorage.getItem('@Barbeiros:user'))?.token;
+      const token = JSON.parse(localStorage.getItem('@Barbearia:user'))?.token;
       const res = await fetch('http://localhost:3001/produtos', {
         headers: { 'Authorization': `Bearer ${token}` }
       });
-      console.log(res)
       return {
         products: res.ok ? await res.json() : []
       }
-    } catch (error) { console.error("Erro ao buscar medicamentos:", error); }
+    } catch (error) { console.error("Erro ao buscar produtos:", error); }
   };
 
-  const fetchPatients = async () => {
+  const fetchClientes = async () => {
     try {
-      const token = JSON.parse(localStorage.getItem('@Barbeiros:user'))?.token;
+      const token = JSON.parse(localStorage.getItem('@Barbearia:user'))?.token;
       const res = await fetch('http://localhost:3001/clientes', {
         headers: { 'Authorization': `Bearer ${token}` }
       });
-      if (res.ok) setPatients(await res.json());
-    } catch (error) { console.error("Erro ao buscar pacientes:", error); }
+      if (res.ok) setClientes(await res.json());
+    } catch (error) { console.error("Erro ao buscar clientes:", error); }
   };
 
-  // Função para buscar enfermeiros
-  const fetchNurses = useCallback(async () => {
+  const fetchAtendentes = useCallback(async () => {
     try {
-      const token = JSON.parse(localStorage.getItem('@Barbeiros:user'))?.token;
-      const res = await fetch('http://localhost:3001/barbeiros', { 
+      const token = JSON.parse(localStorage.getItem('@Barbearia:user'))?.token;
+      const res = await fetch('http://localhost:3001/atendentes', { 
         headers: { 'Authorization': `Bearer ${token}` } 
       });
       return {
-        barbeiros: res.ok ? await res.json() : []
+        atendentes: res.ok ? await res.json() : []
       }
     } catch (e) { console.error(e); }
   }, []);
 
   useEffect(() => {
-    fetchMedications().then(data => {
-      console.log(data)
-      setMedications(data.products)
+    fetchProducts().then(data => {
+      setProducts(data.products || []);
     });
-    fetchNurses().then(data => {
-      setNurses(data.barbeiros)
-    }); //
-  }, [fetchNurses]);
+    fetchAtendentes().then(data => {
+      if (data) setAtendentes(data.atendentes);
+    });
+  }, [fetchAtendentes]);
 
-  const lowStockMeds = medications.filter((med) => (med.qnt_disp || med.quantidade || med.quantity) <= 10);
+  const lowStockProducts = (products || []).filter((prod) => (prod.qnt_estoque || 0) <= 10);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const userObj = JSON.parse(localStorage.getItem('@Barbeiros:user'));
+    const userObj = JSON.parse(localStorage.getItem('@Barbearia:user'));
     
-    // Define qual ID de enfermeiro usar: o selecionado (admin) ou o do próprio usuário logado
-    const enfermeiroId = userObj?.role === 'admin' ? formData.id_enfer : (userObj?.id || userObj?._id);
+    const atendenteId = userObj?.role === 'admin' ? formData.id_atendente : (userObj?.id || userObj?._id);
 
-    if (!enfermeiroId) return alert("Selecione o enfermeiro responsável.");
+    if (!atendenteId) return alert("Selecione o atendente responsável.");
 
     const payload = {
-      nome: formData.name,
-      principio: formData.activeIngredient,
-      qnt_disp: Number(formData.quantity),
-      id_enfer: enfermeiroId
+      nome: formData.nome,
+      marca: formData.marca,
+      qnt_estoque: Number(formData.qnt_estoque),
+      id_atendente: atendenteId
     };
 
     try {
-      const method = editingMed ? 'PUT' : 'POST';
-      const body = editingMed ? { ...payload, id_medicam: editingMed._id } : payload;
+      const method = editingProduct ? 'PUT' : 'POST';
+      const body = editingProduct ? { ...payload, _id: editingProduct._id } : payload;
       
       const res = await fetch('http://localhost:3001/produtos', {
         method,
@@ -94,94 +92,106 @@ export const PharmacyPage = () => {
       });
 
       if (res.ok) {
-        alert(editingMed ? 'Atualizado!' : 'Cadastrado!');
+        alert(editingProduct ? 'Atualizado!' : 'Cadastrado!');
         setIsOpen(false);
         resetForm();
-        fetchMedications();
+        const data = await fetchProducts();
+        setProducts(data.products || []);
+      } else {
+        const result = await res.json();
+        alert(`Erro: ${result.erros ? result.erros.join(', ') : result.erro}`);
       }
     } catch (error) { console.error(error); }
   };
 
-  const handleDispenseSubmit = async (e) => {
+  const handleVendaSubmit = async (e) => {
     e.preventDefault();
-    const userObj = JSON.parse(localStorage.getItem('@Barbeiros:user'));
+    const userObj = JSON.parse(localStorage.getItem('@Barbearia:user'));
     
-    const enfermeiroId = userObj?.role === 'admin' ? dispenseData.id_enfer : (userObj?.id || userObj?._id);
+    const atendenteId = userObj?.role === 'admin' ? vendaData.id_atendente : (userObj?.id || userObj?._id);
 
-    if (!enfermeiroId) return alert("Selecione o enfermeiro que está realizando a dispensa.");
+    if (!atendenteId) return alert("Selecione o atendente que está realizando a venda.");
 
     const payload = {
-      id_medicam: selectedMedForDispense._id,
-      id_paci: dispenseData.patientId,
-      id_enfer: enfermeiroId,
-      quantidade: Number(dispenseData.quantity)
+      id_produto: selectedProductForVenda._id,
+      id_cliente: vendaData.id_cliente,
+      id_atendente: atendenteId,
+      quantidade: Number(vendaData.quantidade)
     };
 
     try {
-      const res = await fetch('http://localhost:3001/produtos', {
+      const res = await fetch('http://localhost:3001/produtos/vender', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${userObj.token}` },
         body: JSON.stringify(payload)
       });
 
       if (res.ok) {
-        alert('Dispensado com sucesso!');
-        setDispenseModalOpen(false);
-        fetchMedications();
+        alert('Venda realizada com sucesso!');
+        setVendaModalOpen(false);
+        const data = await fetchProducts();
+        setProducts(data.products || []);
+      } else {
+        const result = await res.json();
+        alert(`Erro: ${result.erros ? result.erros.join(', ') : result.erro}`);
       }
     } catch (error) { console.error(error); }
   };
 
   const resetForm = () => {
-    setFormData({ name: '', activeIngredient: '', quantity: 0, id_enfer: '' });
-    setEditingMed(null);
+    setFormData({ nome: '', marca: '', qnt_estoque: 0, id_atendente: '' });
+    setEditingProduct(null);
   };
 
-  const handleEdit = (med) => {
-    setEditingMed(med);
+  const handleEdit = (prod) => {
+    setEditingProduct(prod);
     setFormData({
-      name: med.nome,
-      activeIngredient: med.principio,
-      quantity: med.qnt_disp,
-      id_enfer: med.id_enfer || ''
+      nome: prod.nome,
+      marca: prod.marca,
+      qnt_estoque: prod.qnt_estoque || 0,
+      id_atendente: prod.id_atendente || ''
     });
     setIsOpen(true);
   };
 
-  const handleDispenseClick = (med) => {
-    setSelectedMedForDispense(med);
-    setDispenseData({ patientId: '', quantity: 1, id_enfer: '' });
-    setDispenseModalOpen(true);
-    if (patients.length === 0) fetchPatients();
+  const handleVendaClick = (prod) => {
+    setSelectedProductForVenda(prod);
+    setVendaData({ id_cliente: '', quantidade: 1, id_atendente: '' });
+    setVendaModalOpen(true);
+    if (clientes.length === 0) fetchClientes();
   };
 
   const handleDelete = async (id) => {
-    if (!window.confirm('Excluir?')) return;
-    const token = JSON.parse(localStorage.getItem('@Barbeiros:user'))?.token;
-    await fetch('http://localhost:3001/produtos', {
+    if (!window.confirm('Excluir produto?')) return;
+    const token = JSON.parse(localStorage.getItem('@Barbearia:user'))?.token;
+    const res = await fetch('http://localhost:3001/produtos', {
       method: 'DELETE',
       headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
       body: JSON.stringify({ id })
     });
-    fetchMedications();
+    if (res.ok) {
+      alert('Produto excluído com sucesso!');
+    }
+    const data = await fetchProducts();
+    setProducts(data.products || []);
   };
 
   return (
     <div>
       <div className="pharmacy-header">
         <div className="pharmacy-header-content">
-          <h1>Farmácia</h1>
-          <p>Gerencie o estoque de medicamentos</p>
+          <h1>Estoque de Produtos</h1>
+          <p>Gerencie o estoque de produtos da barbearia</p>
         </div>
         <button className="btn btn-success" onClick={() => setIsOpen(true)}>
-          <Plus size={16} style={{ marginRight: '0.5rem' }} /> Adicionar Medicamento
+          <Plus size={16} style={{ marginRight: '0.5rem' }} /> Adicionar Produto
         </button>
       </div>
 
-      {lowStockMeds.length > 0 && (
+      {lowStockProducts.length > 0 && (
         <div className="stock-alert">
           <div className="stock-alert-title"><AlertTriangle size={20} /> Alerta de Estoque Baixo</div>
-          <p>{lowStockMeds.length} item(s) com estoque crítico.</p>
+          <p>{lowStockProducts.length} item(s) com estoque crítico.</p>
         </div>
       )}
 
@@ -191,34 +201,34 @@ export const PharmacyPage = () => {
             <h3 className="stat-card-title">Total</h3>
             <div className="stat-icon primary"><Package size={16} /></div>
           </div>
-          <div className="card-content"><div className="stat-value">{medications.length}</div></div>
+          <div className="card-content"><div className="stat-value">{products.length}</div></div>
         </div>
         <div className="card">
           <div className="card-header stat-card-header">
             <h3 className="stat-card-title">Crítico</h3>
             <div className="stat-icon success"><AlertTriangle size={16} /></div>
           </div>
-          <div className="card-content"><div className="stat-value">{lowStockMeds.length}</div></div>
+          <div className="card-content"><div className="stat-value">{lowStockProducts.length}</div></div>
         </div>
       </div>
 
       <div className="table-container">
         <table className="table">
-          <thead><tr><th>Medicamento</th><th>Quantidade</th><th style={{ textAlign: 'right' }}>Ações</th></tr></thead>
+          <thead><tr><th>Produto</th><th>Quantidade</th><th style={{ textAlign: 'right' }}>Ações</th></tr></thead>
           <tbody>
-            {medications.map((med) => (
-              <tr key={med._id}>
+            {(products || []).map((prod) => (
+              <tr key={prod._id}>
                 <td>
-                  <div style={{ fontWeight: '500' }}>{med.nome}</div>
-                  <div style={{ fontSize: '0.8rem', color: 'var(--color-text-muted)' }}>{med.principio}</div>
-                  {med.qnt_disp <= 10 && <span className="badge badge-danger">Baixo</span>}
+                  <div style={{ fontWeight: '500' }}>{prod.nome}</div>
+                  <div style={{ fontSize: '0.8rem', color: 'var(--color-text-muted)' }}>{prod.marca}</div>
+                  {(prod.qnt_estoque || 0) <= 10 && <span className="badge badge-danger">Baixo</span>}
                 </td>
-                <td>{med.qnt_disp}</td>
+                <td>{prod.qnt_estoque || 0}</td>
                 <td>
                   <div className="table-actions">
-                    <button className="btn-ghost btn-icon" onClick={() => handleDispenseClick(med)} title="Dispensar"><Minus size={16} /></button>
-                    <button className="btn-ghost btn-icon btn-edit" onClick={() => handleEdit(med)}><Pencil size={16} /></button>
-                    <button className="btn-ghost btn-icon btn-delete" onClick={() => handleDelete(med._id)}><Trash2 size={16} /></button>
+                    <button className="btn-ghost btn-icon" onClick={() => handleVendaClick(prod)} title="Registrar Venda"><Minus size={16} /></button>
+                    <button className="btn-ghost btn-icon btn-edit" onClick={() => handleEdit(prod)}><Pencil size={16} /></button>
+                    <button className="btn-ghost btn-icon btn-delete" onClick={() => handleDelete(prod._id)}><Trash2 size={16} /></button>
                   </div>
                 </td>
               </tr>
@@ -231,23 +241,22 @@ export const PharmacyPage = () => {
       {isOpen && (
         <div className="modal-overlay" onClick={() => { setIsOpen(false); resetForm(); }}>
           <div className="modal-content" onClick={e => e.stopPropagation()}>
-            <div className="modal-header"><h2 className="modal-title">{editingMed ? 'Editar' : 'Novo'} Medicamento</h2></div>
+            <div className="modal-header"><h2 className="modal-title">{editingProduct ? 'Editar' : 'Novo'} Produto</h2></div>
             <div className="modal-body">
               <form onSubmit={handleSubmit}>
                 <div className="form-grid">
-                  {/* Seletor para Admin no Cadastro */}
-                  {JSON.parse(localStorage.getItem('@Barbeiros:user'))?.role === 'admin' && (
+                  {JSON.parse(localStorage.getItem('@Barbearia:user'))?.role === 'admin' && (
                     <div className="form-group form-group-full">
-                      <label className="label">Enfermeiro Responsável pelo Estoque</label>
-                      <select className="select" value={formData.id_enfer} onChange={e => setFormData({ ...formData, id_enfer: e.target.value })} required>
+                      <label className="label">Atendente Responsável pelo Estoque</label>
+                      <select className="select" value={formData.id_atendente} onChange={e => setFormData({ ...formData, id_atendente: e.target.value })} required>
                         <option value="">Selecione...</option>
-                        {nurses.map(n => <option key={n._id} value={n._id}>{n.nome}</option>)}
+                        {atendentes.map(a => <option key={a._id} value={a._id}>{a.nome}</option>)}
                       </select>
                     </div>
                   )}
-                  <div className="form-group"><label className="label">Nome</label><input className="input" value={formData.name} onChange={e => setFormData({ ...formData, name: e.target.value })} required /></div>
-                  <div className="form-group"><label className="label">Princípio Ativo</label><input className="input" value={formData.activeIngredient} onChange={e => setFormData({ ...formData, activeIngredient: e.target.value })} required /></div>
-                  <div className="form-group"><label className="label">Quantidade</label><input type="number" className="input" value={formData.quantity} onChange={e => setFormData({ ...formData, quantity: parseInt(e.target.value) })} required /></div>
+                  <div className="form-group"><label className="label">Nome</label><input className="input" value={formData.nome} onChange={e => setFormData({ ...formData, nome: e.target.value })} required /></div>
+                  <div className="form-group"><label className="label">Marca</label><input className="input" value={formData.marca} onChange={e => setFormData({ ...formData, marca: e.target.value })} required /></div>
+                  <div className="form-group"><label className="label">Quantidade em Estoque</label><input type="number" className="input" value={formData.qnt_estoque} onChange={e => setFormData({ ...formData, qnt_estoque: parseInt(e.target.value) })} required /></div>
                 </div>
                 <div className="modal-footer"><button type="button" className="btn btn-secondary" onClick={() => { setIsOpen(false); resetForm(); }}>Cancelar</button><button type="submit" className="btn btn-success">Salvar</button></div>
               </form>
@@ -256,28 +265,27 @@ export const PharmacyPage = () => {
         </div>
       )}
 
-      {/* Modal Dispensa */}
-      {dispenseModalOpen && (
-        <div className="modal-overlay" onClick={() => setDispenseModalOpen(false)}>
+      {/* Modal Venda */}
+      {vendaModalOpen && (
+        <div className="modal-overlay" onClick={() => setVendaModalOpen(false)}>
           <div className="modal-content" onClick={e => e.stopPropagation()}>
-            <div className="modal-header"><h2 className="modal-title">Dispensar Medicamento</h2></div>
+            <div className="modal-header"><h2 className="modal-title">Registrar Venda</h2></div>
             <div className="modal-body">
-              <form onSubmit={handleDispenseSubmit}>
+              <form onSubmit={handleVendaSubmit}>
                 <div className="form-grid">
-                  {/* Seletor para Admin na Dispensa */}
-                  {JSON.parse(localStorage.getItem('@Barbeiros:user'))?.role === 'admin' && (
+                  {JSON.parse(localStorage.getItem('@Barbearia:user'))?.role === 'admin' && (
                     <div className="form-group form-group-full">
-                      <label className="label">Enfermeiro Realizando a Dispensa</label>
-                      <select className="select" value={dispenseData.id_enfer} onChange={e => setDispenseData({ ...dispenseData, id_enfer: e.target.value })} required>
+                      <label className="label">Atendente Realizando a Venda</label>
+                      <select className="select" value={vendaData.id_atendente} onChange={e => setVendaData({ ...vendaData, id_atendente: e.target.value })} required>
                         <option value="">Selecione...</option>
-                        {nurses.map(n => <option key={n._id} value={n._id}>{n.nome}</option>)}
+                        {atendentes.map(a => <option key={a._id} value={a._id}>{a.nome}</option>)}
                       </select>
                     </div>
                   )}
-                  <div className="form-group form-group-full"><label className="label">Paciente</label><select className="select" value={dispenseData.patientId} onChange={e => setDispenseData({ ...dispenseData, patientId: e.target.value })} required><option value="">Selecione...</option>{patients.map(p => (<option key={p._id} value={p._id}>{p.nome} - {p.cpf}</option>))}</select></div>
-                  <div className="form-group"><label className="label">Quantidade</label><input type="number" className="input" min="1" max={selectedMedForDispense?.qnt_disp} value={dispenseData.quantity} onChange={e => setDispenseData({ ...dispenseData, quantity: parseInt(e.target.value) })} required /></div>
+                  <div className="form-group form-group-full"><label className="label">Cliente</label><select className="select" value={vendaData.id_cliente} onChange={e => setVendaData({ ...vendaData, id_cliente: e.target.value })} required><option value="">Selecione...</option>{clientes.map(p => (<option key={p._id} value={p._id}>{p.nome} - {p.cpf}</option>))}</select></div>
+                  <div className="form-group"><label className="label">Quantidade</label><input type="number" className="input" min="1" max={selectedProductForVenda?.qnt_estoque || 0} value={vendaData.quantidade} onChange={e => setVendaData({ ...vendaData, quantidade: parseInt(e.target.value) })} required /></div>
                 </div>
-                <div className="modal-footer"><button type="button" className="btn btn-secondary" onClick={() => setDispenseModalOpen(false)}>Cancelar</button><button type="submit" className="btn btn-success">Confirmar</button></div>
+                <div className="modal-footer"><button type="button" className="btn btn-secondary" onClick={() => setVendaModalOpen(false)}>Cancelar</button><button type="submit" className="btn btn-success">Confirmar Venda</button></div>
               </form>
             </div>
           </div>

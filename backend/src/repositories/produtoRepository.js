@@ -11,7 +11,7 @@ class ProdutoRepository extends BaseRepository {
         return await db.updateOne(
             { _id: new ObjectId(id) },
             // $inc com valor negativo subtrai do campo 'estoque'
-            { $inc: { estoque: -qnt } } 
+            { $inc: { qnt_estoque: -qnt } } 
         );
     }
 }

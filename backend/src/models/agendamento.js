@@ -7,7 +7,6 @@ class Agendamento {
         this.status = status; 
         this.horario = horario;
         this.horarioFim = horarioFim;
-        this.id_atendente = id_atendente; 
         this.id_atendente = new ObjectId(id_atendente); 
         this.id_barbeiro = new ObjectId(id_barbeiro);
         this.id_cliente = new ObjectId(id_cliente);

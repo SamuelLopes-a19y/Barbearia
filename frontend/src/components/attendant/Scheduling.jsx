@@ -66,7 +66,7 @@ export const Scheduling = () => {
     }
 
     if (dataFim <= dataInicio) {
-      alert("⚠️ O horário de saída deve ser depois do horário de entrada!");
+      alert("⚠️ O horário de término deve ser depois do horário de início!");
       return;
     }
 
@@ -75,19 +75,21 @@ export const Scheduling = () => {
     const headers = { "Content-Type": "application/json" , "Authorization": `Bearer ${token}` };
 
     try {
+      const storedUserObj = JSON.parse(localStorage.getItem('@Barbearia:user'));
+      const idAtendente = storedUserObj?.id || storedUserObj?._id || '';
+
       let response;
       if (editingAppointment) {
-        console.log()
         response = await fetch("http://localhost:3001/agendamento/atendente", {
           method: "PUT",
           headers,
-          body: JSON.stringify({ ...formData, id_agend: editingAppointment._id }),
+          body: JSON.stringify({ ...formData, id_agend: editingAppointment._id, id_atendente: idAtendente }),
         });
       } else {
         response = await fetch("http://localhost:3001/agendamento/atendente", {
           method: "POST",
           headers,
-          body: JSON.stringify({ ...formData, status:'Agendado' }), 
+          body: JSON.stringify({ ...formData, status:'Agendado', id_atendente: idAtendente }), 
         });
       }
 
@@ -154,15 +156,15 @@ export const Scheduling = () => {
 
   const today = new Date().toISOString().split('T')[0];
 
-  const patientMap = new Map(clients.map(p => [String(p._id), p]));
-  const doctorMap = new Map(barbeiros.map(d => [String(d._id), d]));
+const clienteMap = new Map(clients.map(p => [String(p._id), p]));
+  const barbeiroMap = new Map(barbeiros.map(d => [String(d._id), d]));
 
   const filteredAppointments = (appointments || []).filter((apt) => {
-    const patient = patientMap.get(String(apt.id_cliente));
-    const doctor = doctorMap.get(String(apt.id_barbeiro));
+    const cliente = clienteMap.get(String(apt.id_cliente));
+    const barbeiro = barbeiroMap.get(String(apt.id_barbeiro));
     
-    const matchCliente = !filterCliente ? true : (patient?.nome?.toLowerCase().includes(filterCliente.toLowerCase()) ?? false);
-    const matchBarbeiro = !filterBarbeiro ? true : (doctor?.nome?.toLowerCase().includes(filterBarbeiro.toLowerCase()) ?? false);
+    const matchCliente = !filterCliente ? true : (cliente?.nome?.toLowerCase().includes(filterCliente.toLowerCase()) ?? false);
+    const matchBarbeiro = !filterBarbeiro ? true : (barbeiro?.nome?.toLowerCase().includes(filterBarbeiro.toLowerCase()) ?? false);
     // const matchDate = filterDate ? apt.data === filterDate : apt.data >= today;
 
     return matchCliente && matchBarbeiro;
@@ -187,7 +189,7 @@ export const Scheduling = () => {
       <div className="scheduling-header">
         <div className="scheduling-header-content">
           <h1>Agendamentos</h1>
-          <p>Gerencie os agendamentos de consultas</p>
+          <p>Gerencie os agendamentos da barbearia</p>
         </div>
         <button className="btn btn-success" onClick={() => setIsOpen(true)}>
           <Plus size={16} style={{ marginRight: '0.5rem' }} /> Novo Agendamento
@@ -208,7 +210,7 @@ export const Scheduling = () => {
         <table className="table">
           <thead>
             <tr>
-              <th>cliente</th>
+              <th>Cliente</th>
               <th>Barbeiro</th>
               <th>Horário</th>
               <th>Status</th>
@@ -221,19 +223,19 @@ export const Scheduling = () => {
             ) : (
               Object.keys(groupedAppointments).map((date) => (
                 <React.Fragment key={date}>
-                  <tr style={{ backgroundColor: '#f0fdf4', borderBottom: '2px solid #c6f6d5' }}>
-                    <td colSpan="5" style={{ fontWeight: 'bold', color: '#166534', padding: '0.75rem 1rem' }}>📅 {date}</td>
+                  <tr style={{ backgroundColor: '#1b1b1b', borderBottom: '2px solid #333' }}>
+                    <td colSpan="5" style={{ fontWeight: 'bold', color: '#F05A11', padding: '0.75rem 1rem' }}>📅 {date}</td>
                   </tr>
                   {groupedAppointments[date].map((appointment) => {
-                    const patient = clients.find((p) => String(p._id) === String(appointment.id_cliente));
-                    const doctor = barbeiros.find((d) => String(d._id) === String(appointment.id_barbeiro));
+                    const cliente = clients.find((p) => String(p._id) === String(appointment.id_cliente));
+                    const barbeiro = barbeiros.find((d) => String(d._id) === String(appointment.id_barbeiro));
                     
                     const isagendado = appointment.status === "Agendado";
 
                     return (
                       <tr key={appointment._id}>
-                        <td>{patient?.nome}</td>
-                        <td>{doctor?.nome}</td>
+                        <td>{cliente?.nome}</td>
+                        <td>{barbeiro?.nome}</td>
                         <td>{appointment.horario} às {appointment.horarioFim}</td>
                         <td>
                           <span className={`status-badge ${isagendado ? 'agendado' : 'pendente'}`}>
@@ -266,7 +268,7 @@ export const Scheduling = () => {
             <form onSubmit={handleSubmit}>
               <div className="form-grid">
                 <div className="form-group">
-                  <label className="label">cliente</label>
+                  <label className="label">Cliente</label>
                   <select className="select" value={formData.id_cliente} onChange={(e) => setFormData({ ...formData, id_cliente: e.target.value })} required>
                     <option value="">Selecione o cliente</option>
                     {clients.map((p) => <option key={p._id} value={p._id}>{p.nome}</option>)}
@@ -284,11 +286,11 @@ export const Scheduling = () => {
                   <input type="date" className="input" value={formData.data} min={today} onChange={(e) => setFormData({ ...formData, data: e.target.value })} required />
                 </div>
                 <div className="form-group">
-                  <label className="label">Entrada</label>
+                  <label className="label">Horário Início</label>
                   <input type="time" className="input" value={formData.horario} onChange={(e) => setFormData({ ...formData, horario: e.target.value })} required />
                 </div>
                 <div className="form-group">
-                  <label className="label">Saída</label>
+                  <label className="label">Horário Término</label>
                   <input type="time" className="input" value={formData.horarioFim} onChange={(e) => setFormData({ ...formData, horarioFim: e.target.value })} required />
                 </div>
                 <div className="form-group form-group-full">

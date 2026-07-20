@@ -9,8 +9,6 @@ class Barbeiro extends Usuario {
         this.descricao = descricao;
     }
 
-    
-
     static validarBarbeiro(dados) {
         const erros = [];
         erros.push(...Usuario.validarDadosUser(dados));

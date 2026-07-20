@@ -6,7 +6,7 @@ module.exports = {
         try {
             const db = require('../database').getDb();
             // Filtra pela agenda do barbeiro logado
-            const agendamentos = await db.collection('agendamentos').find({ id_barbeiro: req.userId }).toArray();
+            const agendamentos = await db.collection('agendamentos').find({ id_barbeiro: new ObjectId(req.userId) }).toArray();
             res.json(agendamentos);
         } catch (error) {
             res.status(500).json({ erro: error.message });
@@ -16,7 +16,7 @@ module.exports = {
         try {
             const { id } = req.query;
             const db = require('../database').getDb();
-            const agendamento = await db.collection('agendamentos').findOne({ _id: new ObjectId(id), id_barbeiro: req.userId });
+            const agendamento = await db.collection('agendamentos').findOne({ _id: new ObjectId(id), id_barbeiro: new ObjectId(req.userId) });
             res.json(agendamento);
         } catch (error) {
             res.status(500).json({ erro: error.message });
@@ -27,7 +27,7 @@ module.exports = {
             const { id, status } = req.body;
             const db = require('../database').getDb();
             await db.collection('agendamentos').updateOne(
-                { _id: new ObjectId(id), id_barbeiro: req.userId }, 
+                { _id: new ObjectId(id), id_barbeiro: new ObjectId(req.userId) },
                 { $set: { status } }
             );
             res.json({ mensagem: "Status atualizado" });

@@ -6,26 +6,22 @@
 }
 
 :root {
-  /* Cores principais do sistema médico */
-  /* --color-medical-blue: #00579B; */
-  --color-medical-blue: #ae8755;
-  --color-health-green: #1B5E20;
+  /* Cores principais da barbearia */
+  --color-barbearia: #F05A11;
+  --color-success: #F05A11;
   --color-alert-red: #D32F2F;
   /* --color-background: #F5F7FA; */
   --color-background: #141414; 
   --color-white: #FFFFFF;
   --color-black:black;
   
-  /* Variações de Medical Blue */
-  /* --color-primary: #00579B; */
-  /* --color-primary-hover: #004275; */
-  --color-primary: #ae8755;
-  --color-primary-hover: #96754b;
-  --color-primary-light: #E3F2FD;
-  /* Variações de Health Green */
-  --color-success: #1B5E20;
-  --color-success-hover: #145018;
-  --color-success-light: #E8F5E9;
+  /* Variações de Laranja da Barbearia */
+  --color-primary: #F05A11;
+  --color-primary-hover: #d14a0a;
+  --color-primary-light: rgba(240, 90, 17, 0.1);
+  /* Variações de Verde (Botões secundários) */
+  --color-success-hover: #d14a0a;
+  --color-success-light: rgba(240, 90, 17, 0.15);
   
   /* Variações de Alert Red */
   --color-danger: #D32F2F;
@@ -34,7 +30,7 @@
   
   /* Cores neutras */
   --color-text-primary: #ffffff;
-  --color-text-secondary: #ffe5c3;
+  --color-text-secondary: #bbb;
   --color-text-muted: #d3d3d3;
   /* --color-border: #E0E0E0; */
   --color-border: #666666;
@@ -42,8 +38,8 @@
   
   /* Inputs */
   --color-input-bg: #2e2e2e;
-  --color-input-border: #ae8755;
-  --color-input-focus: #00579B;
+  --color-input-border: #F05A11;
+  --color-input-focus: #F05A11;
   
   /* Cards */
   /* --color-card-bg: #FFFFFF; */
@@ -192,7 +188,7 @@ body {
 
 .input:focus {
   border-color: var(--color-input-focus);
-  box-shadow: 0 0 0 3px rgba(0, 87, 155, 0.1);
+  box-shadow: 0 0 0 3px rgba(240, 90, 17, 0.1);
 }
 
 .input::placeholder {
@@ -237,7 +233,7 @@ body {
 
 .select:focus {
   border-color: var(--color-input-focus);
-  box-shadow: 0 0 0 3px rgba(0, 87, 155, 0.1);
+  box-shadow: 0 0 0 3px rgba(240, 90, 17, 0.1);
 }
 
 /* Textarea */
@@ -259,7 +255,7 @@ body {
 
 .textarea:focus {
   border-color: var(--color-input-focus);
-  box-shadow: 0 0 0 3px rgba(0, 87, 155, 0.1);
+  box-shadow: 0 0 0 3px rgba(240, 90, 17, 0.1);
 }
 
 /* Card */
@@ -320,7 +316,7 @@ body {
 }
 
 .badge-secondary {
-  background-color: #F5F5F5;
+  background-color: #333;
   color: var(--color-text-secondary);
 }
 

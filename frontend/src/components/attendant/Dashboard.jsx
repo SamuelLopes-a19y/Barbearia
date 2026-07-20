@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Users, Stethoscope, Calendar, TrendingUp } from 'lucide-react';
+import { Users, Scissors, Calendar, TrendingUp } from 'lucide-react';
 import '../../styles/Dashboard.css';
 
 export const AttendantDashboard = () => {
@@ -49,7 +49,7 @@ export const AttendantDashboard = () => {
     {
       title: 'Barbeiros Disponíveis',
       value: barbers.length,
-      icon: Stethoscope,
+      icon: Scissors,
       colorClass: 'success',
     },
     {
@@ -106,14 +106,14 @@ export const AttendantDashboard = () => {
                   return (
                     <div key={apt._id} className="appointment-item">
                       <div className="appointment-info">
-                        <p style={{ fontWeight: '600', color: '#1e293b' }}>{client?.nome || 'Paciente'}</p>
-                        <p style={{ fontSize: '0.85rem', color: '#64748b' }}>{barber?.nome || 'Médico'}</p>
+                        <p style={{ fontWeight: '600', color: '#ffffff' }}>{client?.nome || 'Cliente'}</p>
+                        <p style={{ fontSize: '0.85rem', color: '#999' }}>{barber?.nome || 'Barbeiro'}</p>
                       </div>
                       <div className="appointment-time">
                         <p>{apt.horario} às {apt.horarioFim}</p>
                         {/* Ajuste das cores e texto conforme o booleano real */}
                         <span className={`badge ${isCompleted ? 'badge-success' : 'badge-primary'}`}>
-                          {isCompleted ? 'Concluído' : 'Pendente'}
+                          {isCompleted ? 'Agendado' : 'Pendente'}
                         </span>
                       </div>
                     </div>

@@ -1,6 +1,6 @@
 const { Router } = require('express');
 const atendenteAgendController = require('../controllers/AtendenteAgendamentoController');
-const barbeiroAgendController = require('../controllers/barbeiroAgendamentoController');
+const barbeiroAgendController = require('../controllers/BarbeiroAgendamentoController');
 const auth = require('../middlewares/auth');
 const authAtendente = require('../middlewares/authAtendente');
 const authBarbeiro = require('../middlewares/authBarbeiro'); 

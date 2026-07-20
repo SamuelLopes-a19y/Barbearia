@@ -45,9 +45,9 @@
 }
 
 .tab-trigger.active {
-  background-color:var(--color-white);
-  color: var(--color-black);
-  box-shadow: var(--shadow-sm);
+  background-color: var(--color-primary);
+  color: var(--color-white);
+  box-shadow: var(--shadow-md);
 }
 
 .tab-content {
@@ -147,16 +147,38 @@
 
 .btn-icon.btn-edit {
   color: var(--color-primary);
+  border-radius: 50%;
+  transition: all 0.2s ease;
+  width: 32px;
+  height: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(240, 90, 17, 0.08);
 }
 
 .btn-icon.btn-delete {
   color: var(--color-danger);
+  border-radius: 50%;
+  transition: all 0.2s ease;
+  width: 32px;
+  height: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(211, 47, 47, 0.08);
 }
 
 .btn-icon.btn-edit:hover {
-  background-color: var(--color-primary-light);
+  background-color: var(--color-primary);
+  color: #fff;
+  transform: scale(1.1);
+  box-shadow: 0 2px 8px rgba(240, 90, 17, 0.3);
 }
 
 .btn-icon.btn-delete:hover {
-  background-color: var(--color-danger-light);
+  background-color: var(--color-danger);
+  color: #fff;
+  transform: scale(1.1);
+  box-shadow: 0 2px 8px rgba(211, 47, 47, 0.3);
 }
