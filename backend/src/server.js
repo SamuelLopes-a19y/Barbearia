@@ -6,7 +6,6 @@ const PORT = process.env.PORT || 3001;
 
 async function start() {
   try {
-    // Garante a ligação à base de dados antes de abrir a API para requisições
     await connect(); 
     
     
