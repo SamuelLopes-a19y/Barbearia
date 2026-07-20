@@ -2,18 +2,16 @@ const bcryptjs = require('bcryptjs');
 const Endereco = require('../models/EnderecoModel');
 
 class Usuario {
-    constructor(nome, cpf, tipoPerfil, email, senha, dataNasc, enderecoData, telefone) {
+    constructor(nome, cpf, tipoPerfil, email, dataNasc, enderecoData, telefone) {
         this.nome = nome;
         this.cpf = cpf;
         this.tipoPerfil = tipoPerfil?.toUpperCase();
         this.email = email;
-        this.senha = senha;
         this.dataNasc = dataNasc;
-        this.data_cadastro = new Date();
-        this.telefone = telefone;
+        this.telefone = String(telefone);
         
         if (enderecoData) {
-            this.endereco = new Endereco(
+            const endereco = new Endereco(
                 enderecoData.estado,
                 enderecoData.cidade,
                 enderecoData.bairro,
@@ -21,9 +19,12 @@ class Usuario {
                 enderecoData.cep,
                 enderecoData.numero
             );
+
+            this.endereco = endereco.toJSON();
         } else {
             this.endereco = null;
         }
+        this.data_cadastro = new Date();
     }
 
     static validarDadosUser(usuario) {
@@ -41,7 +42,7 @@ class Usuario {
             erros.push("E-mail inválido ou não informado.");
         }
         
-        if (!usuario.senha) erros.push("O campo 'senha' é obrigatório.");
+        // if (!usuario.senha) erros.push("O campo 'senha' é obrigatório.");
         
         if (!usuario.dataNasc) {
             erros.push("O campo 'dataNasc' (Data de nascimento) é obrigatório.");

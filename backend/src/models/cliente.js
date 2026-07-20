@@ -2,13 +2,14 @@ const Usuario = require("./usuario");
 const Endereco = require('../models/EnderecoModel');
 
 class Cliente extends Usuario {
-    constructor(nome, cpf, email, senha, dataNasc, endereco, telefone, tipoCabelo, preferencias) {
-        super(nome, cpf, 'CLIENTE', email, senha, dataNasc, endereco, telefone);
-        this.tipoCabelo = tipoCabelo;
+    constructor(nome, cpf, email, dataNasc, endereco, telefone, tipoCabelo, preferencias) {
+        
+        super(nome, cpf, 'CLIENTE', email, dataNasc, endereco, telefone);
         this.preferencias = preferencias; 
+        this.tipoCabelo = tipoCabelo;
     }
 
-    static validarCliente(dados) {
+    validarCliente(dados) {
         const erros = [];
         erros.push(...Usuario.validarDadosUser(dados));
 

@@ -1,6 +1,6 @@
 const bcryptjs = require('bcryptjs');
 const Cliente = require('../models/cliente'); 
-const ClienteRepo = require('../repositories/clienteRepository');
+const ClienteRepo = require('../repositories/ClienteRepository');
 const Endereco = require('../models/EnderecoModel'); 
 const AtendenteRepo = require('../repositories/atendenteRepository'); 
 const AdminRepo = require('../repositories/adminRepository');
@@ -9,14 +9,16 @@ module.exports = {
 
     async create(req, res) {
         try {
-            const dados = req.body;
+            const {...dados} = req.body;
             const erros = [];
 
-            const erroscliente = cliente.validarcliente(dados);
+            const cliente = new Cliente(req.body.nome, req.body.cpf, req.body.email, req.body.dataNasc, req.body.endereco, req.body.telefone, req.body.tipoCabelo, req.body.preferencias);  
+
+            const erroscliente = cliente.validarCliente(dados);
             if (erroscliente.length > 0) erros.push(...erroscliente);
 
             if (erros.length === 0) {
-                const usuarioExistente = await clienteRepo.findByCpfOrEmail(dados.cpf, dados.email);
+                const usuarioExistente = await ClienteRepo.findByCpfOrEmail(dados.cpf, dados.email);
                 if (usuarioExistente) {
                     if (usuarioExistente.cpf === dados.cpf) erros.push("CPF já existe.");
                     if (usuarioExistente.email === dados.email) erros.push("E-mail já existe.");
@@ -27,15 +29,9 @@ module.exports = {
                 return res.status(400).json({ erros });
             }
 
-            const { nome, cpf, email, senha, dataNasc, endereco, telefone, especialidades, descricao } = dados;
-
-            const cliente = new cliente(
-                nome, cpf, email, senha, dataNasc, endereco, telefone, especialidades, descricao
-            );  
-
             await cliente.hashPassword();
 
-            const resultado = await clienteRepo.create(cliente);
+            const resultado = await ClienteRepo.create(cliente);
 
             res.status(201).json({
                 mensagem: "cliente cadastrado com sucesso!",
@@ -43,13 +39,14 @@ module.exports = {
             });
 
         } catch (error) {
+            console.log(error)
             res.status(500).json({ erro: error.message });
         }
     },
 
     async list(req, res) {
         try {
-            const clientes = await clienteRepo.findAll();
+            const clientes = await ClienteRepo.findAll();
             res.json(clientes);
         } catch (error) {
             res.status(500).json({ erro: error.message });
@@ -64,7 +61,7 @@ module.exports = {
                 return res.status(400).json({ erro: "ID do cliente não fornecido para a busca." });
             }
 
-            const cliente = await clienteRepo.findById(id);
+            const cliente = await ClienteRepo.findById(id);
 
             if (!cliente) {
                 return res.status(404).json({ erro: "cliente não encontrado." });
@@ -101,9 +98,9 @@ module.exports = {
 
     async update(req, res) {
         try {
-            const { nome, cpf, email, senha, dataNasc, endereco, telefone, tipoCabelo, preferencias, id_atendente, id_cliente, id_admin } = req.body;
+            const { nome, cpf, email, dataNasc, endereco, telefone, tipoCabelo, preferencias, id_atendente, id_cliente, id_admin } = req.body;
             const erros = [];
-
+            const novoCliente = new Cliente(req.body.nome, req.body.cpf, req.body.email, req.body.dataNasc, req.body.endereco, req.body.telefone, req.body.tipoCabelo, req.body.preferencias)
             // Validação de quem está alterando (Admin ou Atendente do salão/barbearia)
             if (id_admin) {
                 const admin = await AdminRepo.findById(id_admin);
@@ -120,11 +117,6 @@ module.exports = {
 
             if (erros.length > 0) return res.status(404).json({ erros });
 
-            const dados = {
-                nome, cpf, email, senha: senha || cliente.senha, dataNasc, 
-                endereco, telefone, tipoCabelo, preferencias
-            };
-
             // Revalidação dos dados atualizados
             /*const errosValidacao = Cliente.validarCliente(dados);
             if (errosValidacao.length > 0) erros.push(...errosValidacao);
@@ -135,12 +127,12 @@ module.exports = {
             }*/
 
             if (erros.length === 0) {
-                const usuarioExistente = await ClienteRepo.findByCpfOrEmail(cpf, email);
+                const usuarioExistente = await ClienteRepo.findByCpfOrEmail(novoCliente.cpf, novoCliente.email);
                 
                 if (usuarioExistente) {
                     if (String(usuarioExistente._id) !== String(id_cliente)) {
-                        if (usuarioExistente.cpf === cpf) erros.push("Este CPF já está sendo usado por outro usuário.");
-                        if (usuarioExistente.email === email) erros.push("Este E-mail já está sendo usado por outro usuário.");
+                        if (usuarioExistente.cpf === novoCliente.cpf) erros.push("Este CPF já está sendo usado por outro usuário.");
+                        if (usuarioExistente.email === novoCliente.email) erros.push("Este E-mail já está sendo usado por outro usuário.");
                     }
                 }
             }
@@ -149,22 +141,7 @@ module.exports = {
                 return res.status(400).json({ erros });
             }
 
-            const dadosAtualizados = {
-                nome, 
-                cpf, 
-                email, 
-                dataNasc, 
-                endereco, 
-                telefone, 
-                tipoCabelo,
-                preferencias
-            };
-
-            if (senha) {
-                dadosAtualizados.senha = await bcryptjs.hash(senha, 8);
-            }
-
-            await ClienteRepo.update(id_cliente, dadosAtualizados);
+            await ClienteRepo.update(id_cliente, novoCliente);
 
             res.status(200).json({ mensagem: "Cliente atualizado com sucesso!" });
         } catch (error) {

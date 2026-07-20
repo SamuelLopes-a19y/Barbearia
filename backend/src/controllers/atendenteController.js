@@ -7,7 +7,7 @@ const AtendenteRepo = require('../repositories/atendenteRepository');
 module.exports = {
     async create(req, res) {
         try {
-            const dados = req.body;
+            const {...dados} = req.body;
             const erros = [];
 
             const errosAtendente = Atendente.validarAtendente(dados);
@@ -65,18 +65,20 @@ module.exports = {
 
     async update(req, res) {
         try {
-            const dados = req.body;
-            const id = dados.id || dados._id;
+            console.log(req.body)
+            const { _id,id_recep,id_admin,...dados} = req.body;
 
-            if (!id) {
+            if (!_id) {
                 return res.status(400).json({ erro: "ID obrigatório." });
             }
 
-            if (dados.senha) {
+            if (dados.senha == "") {
+                delete dados.senha
+            } else{
                 dados.senha = await bcryptjs.hash(dados.senha, 10);
             }
 
-            const resultado = await AtendenteRepo.update(id, dados);
+            const resultado = await AtendenteRepo.update(_id, dados);
 
             if (resultado.matchedCount === 0 || !resultado) {
                 return res.status(404).json({ erro: "Atendente não encontrado." });
@@ -90,6 +92,8 @@ module.exports = {
 
     async delete(req, res) {
         try {
+
+            console.log(req.body)
             const id = req.body.id || req.query.id;
 
             if (!id) {

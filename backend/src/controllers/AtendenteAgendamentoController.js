@@ -1,4 +1,5 @@
-const AgendamentoRepo = require('../repositories/baseRepository'); 
+const AgendamentoRepo = require('../repositories/baseRepository');
+const Agendamento = require('../models/agendamento')
 
 const { ObjectId } = require('mongodb');
 
@@ -6,9 +7,11 @@ module.exports = {
     async create(req, res) {
         try {
             const db = require('../database').getDb();
-            const resultado = await db.collection('agendamentos').insertOne(req.body);
+            const novoAgendamento = new Agendamento(req.body.data, req.body.descricao, req.body.status, req.body.horario, req.body.horarioFim, req.body.id_atendente, req.body.id_barbeiro, req.body.id_cliente);
+            const resultado = await db.collection('agendamentos').insertOne(novoAgendamento);
             res.status(201).json(resultado);
         } catch (error) {
+            console.log(error)
             res.status(500).json({ erro: error.message });
         }
     },
@@ -33,10 +36,12 @@ module.exports = {
     },
     async update(req, res) {
         try {
-            const { id } = req.body;
+            const id  = req.body.id_agend;
             const db = require('../database').getDb();
             const { id: _, ...dados } = req.body;
-            await db.collection('agendamentos').updateOne({ _id: new ObjectId(id) }, { $set: dados });
+            const novoAgendamento = new Agendamento(req.body.data, req.body.descricao, req.body.status, req.body.horario, req.body.horarioFim, req.body.id_atendente, req.body.id_barbeiro, req.body.id_cliente);
+            console.log(dados)
+            await db.collection('agendamentos').updateOne({ _id: new ObjectId(id) }, { $set: novoAgendamento });
             res.json({ mensagem: "Atualizado" });
         } catch (error) {
             res.status(500).json({ erro: error.message });

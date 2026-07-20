@@ -8,6 +8,17 @@ class Endereco {
         this.numero = numero; 
     }
 
+    toJSON() {
+        return {
+        estado: this.estado,
+        cidade: this.cidade,
+        bairro: this.bairro,
+        rua: this.rua,
+        cep: this.cep,
+        numero: this.numero,
+        };
+    }
+
     static validarEndereco(endereco) {
         const erros = [];
         if (!endereco) return ["Dados de endereço não informados."];

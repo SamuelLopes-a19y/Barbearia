@@ -35,7 +35,8 @@ async function povoarBanco() {
             cpf: "000.000.000-00",
             email: "admin@barbearia.com",
             senha: hashSenha,
-            tipoPerfil: "ADMIN"
+            tipoPerfil: "ADMIN",
+            data_cadastro: new Date()
         });
 
         // 2. Criar Atendentes
@@ -52,7 +53,8 @@ async function povoarBanco() {
                 dataNasc: "1995-05-12",
                 telefone: "912345678",
                 turno: "Manhã",
-                endereco: { estado: "Minas Gerais", cidade: "João Monlevade", bairro: "Centro", rua: "Rua A", cep: "35930-000", numero: "123" }
+                endereco: { estado: "Minas Gerais", cidade: "João Monlevade", bairro: "Centro", rua: "Rua A", cep: "35930-000", numero: "123" },
+                data_cadastro: new Date()
             },
             {
                 _id: idAtendente2,
@@ -64,7 +66,8 @@ async function povoarBanco() {
                 dataNasc: "1998-09-20",
                 telefone: "918765432",
                 turno: "Tarde",
-                endereco: { estado: "Minas Gerais", cidade: "João Monlevade", bairro: "Carneirinhos", rua: "Rua B", cep: "35930-100", numero: "456" }
+                endereco: { estado: "Minas Gerais", cidade: "João Monlevade", bairro: "Carneirinhos", rua: "Rua B", cep: "35930-100", numero: "456" },
+                data_cadastro: new Date()
             }
         ]);
 
@@ -84,7 +87,8 @@ async function povoarBanco() {
                 telefone: "922223333",
                 especialidade: "Corte Clássico & Barba com Toalha Quente",
                 descricao: "Especialista em visagismo masculino com mais de 10 anos de experiência.",
-                endereco: { estado: "Minas Gerais", cidade: "João Monlevade", bairro: "Centro", rua: "Av. Wilson Alvarenga", cep: "35930-001", numero: "789" }
+                endereco: { estado: "Minas Gerais", cidade: "João Monlevade", bairro: "Centro", rua: "Av. Wilson Alvarenga", cep: "35930-001", numero: "789" },
+                data_cadastro: new Date()
             },
             {
                 _id: idBarbeiro2,
@@ -97,7 +101,8 @@ async function povoarBanco() {
                 telefone: "933334444",
                 especialidade: "Degradê (Fade), Freestyle e Alisamento",
                 descricao: "Focado em cortes modernos, designs urbanos e tendências da cultura.",
-                endereco: { estado: "Minas Gerais", cidade: "João Monlevade", bairro: "Vila Tanque", rua: "Rua C", cep: "35930-150", numero: "12" }
+                endereco: { estado: "Minas Gerais", cidade: "João Monlevade", bairro: "Vila Tanque", rua: "Rua C", cep: "35930-150", numero: "12" },
+                data_cadastro: new Date()
             },
             {
                 _id: idBarbeiro3,
@@ -110,7 +115,8 @@ async function povoarBanco() {
                 telefone: "944445555",
                 especialidade: "Barboterapia e Pigmentação",
                 descricao: "Especialista em cuidados para a pele masculina e técnicas avançadas de barba.",
-                endereco: { estado: "Minas Gerais", cidade: "João Monlevade", bairro: "Cruzeiro Celeste", rua: "Rua D", cep: "35930-200", numero: "99" }
+                endereco: { estado: "Minas Gerais", cidade: "João Monlevade", bairro: "Cruzeiro Celeste", rua: "Rua D", cep: "35930-200", numero: "99" },
+                data_cadastro: new Date()
             }
         ]);
 
@@ -123,37 +129,40 @@ async function povoarBanco() {
                 _id: idCliente1,
                 nome: "Rodrigo Almeida",
                 cpf: "666.777.887-99",
-                email: "rodrigo@gmail.com",
-                senha: hashSenha,
                 tipoPerfil: "CLIENTE",
+                email: "rodrigo@gmail.com",
                 dataNasc: "1990-04-10",
                 telefone: "955556666",
+                endereco: { estado: "Minas Gerais", cidade: "João Monlevade", bairro: "Centro", rua: "Rua E", cep: "35930-000", numero: "10" },
+                data_cadastro: new Date(),
                 preferencias: "Prefere degradê alto e café expresso bem forte.",
-                endereco: { estado: "Minas Gerais", cidade: "João Monlevade", bairro: "Centro", rua: "Rua E", cep: "35930-000", numero: "10" }
+                tipoCabelo: "Afro",
             },
             {
                 _id: idCliente2,
                 nome: "Bruno Silva",
                 cpf: "777.888.999-00",
-                email: "bruno@hotmail.com",
-                senha: hashSenha,
                 tipoPerfil: "CLIENTE",
+                email: "bruno@hotmail.com",
                 dataNasc: "1994-08-18",
                 telefone: "966667777",
+                endereco: { estado: "Minas Gerais", cidade: "João Monlevade", bairro: "Baú", rua: "Rua F", cep: "35930-300", numero: "220" },
+                data_cadastro: new Date(),
                 preferencias: "Mantém a barba cheia, gosta de lavar com shampoo mentolado.",
-                endereco: { estado: "Minas Gerais", cidade: "João Monlevade", bairro: "Baú", rua: "Rua F", cep: "35930-300", numero: "220" }
+                tipoCabelo: "Liso",
             },
             {
                 _id: idCliente3,
                 nome: "Guilherme Santos",
                 cpf: "888.999.000-11",
-                email: "guilherme@outlook.com",
-                senha: hashSenha,
                 tipoPerfil: "CLIENTE",
+                email: "guilherme@outlook.com",
                 dataNasc: "2001-12-25",
                 telefone: "977778888",
+                endereco: { estado: "Minas Gerais", cidade: "João Monlevade", bairro: "Loanda", rua: "Rua G", cep: "35930-400", numero: "5" },
+                data_cadastro: new Date(),
                 preferencias: "Corte social feito estritamente na tesoura, não gosta de máquina.",
-                endereco: { estado: "Minas Gerais", cidade: "João Monlevade", bairro: "Loanda", rua: "Rua G", cep: "35930-400", numero: "5" }
+                tipoCabelo: "Ondulado",
             }
         ]);
 

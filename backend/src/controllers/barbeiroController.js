@@ -6,7 +6,7 @@ const BarbeiroRepo = require('../repositories/barbeiroRepository');
 module.exports = {
     async create(req, res) {
         try {
-            const dados = req.body;
+            const {...dados} = req.body;
             const erros = [];
 
             const errosBarbeiro = Barbeiro.validarBarbeiro(dados);
@@ -24,10 +24,10 @@ module.exports = {
                 return res.status(400).json({ erros });
             }
 
-            const { nome, cpf, email, senha, dataNasc, endereco, telefone, especialidades, descricao } = dados;
+            const { nome, cpf, email, senha, dataNasc, endereco, telefone, especialidade, descricao } = dados;
 
             const barbeiro = new Barbeiro(
-                nome, cpf, email, senha, dataNasc, endereco, telefone, especialidades, descricao
+                nome, cpf, email, senha, dataNasc, endereco, telefone, especialidade, descricao
             );  
 
             await barbeiro.hashPassword();
@@ -40,6 +40,7 @@ module.exports = {
             });
 
         } catch (error) {
+            console.log(error)
             res.status(500).json({ erro: error.message });
         }
     },
@@ -75,18 +76,21 @@ module.exports = {
 
     async update(req, res) {
         try {
-            const dados = req.body;
-            const id = dados.id || dados._id; 
-
-            if (!id) {
+            const {_id,id_admin, ...dados} = req.body;
+ 
+            if (!_id) {
                 return res.status(400).json({ erro: "O ID do barbeiro é obrigatório para atualização." });
             }
 
-            if (dados.senha) {
+            if (dados.senha == "") {
+                delete dados.senha
+            } else{
                 dados.senha = await bcryptjs.hash(dados.senha, 10);
             }
 
-            const resultado = await BarbeiroRepo.update(id, dados);
+            dados.telefone = String(dados.telefone)
+
+            const resultado = await BarbeiroRepo.update(_id, dados);
 
             if (resultado.matchedCount === 0 || !resultado) {
                 return res.status(404).json({ erro: "Barbeiro não encontrado para atualização." });
@@ -94,6 +98,7 @@ module.exports = {
 
             res.status(200).json({ mensagem: "Barbeiro atualizado com sucesso!" });
         } catch (error) {
+            console.log(error)
             res.status(500).json({ erro: error.message });
         }
     },
